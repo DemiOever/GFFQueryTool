@@ -1,28 +1,47 @@
 package nl.bioinf.alpruis.operations;
 
+import java.util.Map;
+
 public class SummarizeFile {
     private static int gettingLengthSequence() {
         // length of the sequence
-        return 14;
+        // input: String
+        // return: length = int
+        return 0;
     }
+
     private static int gettingGcPercentage() {
-    // gc-percentage
+        // gc-percentage
+        // input: String
+        // return: percentage = int
         return 100;
     }
 
-    private static void countingFeatureTypes() {
-    // feature types with the amount present
+    private static Map<String, Integer> countingFeatureTypes() {
+        // feature types with the amount present
+        // input: String
+        // return: name type + amount = String + int
+        return null;
     }
 
-    private static void averageLengthGenes() {
-    // Average lengths of the genes
+    private static double averageLengthGenes() {
+        // Average lengths of the genes
+        // input: String
+        // return: name gene + amount = String + int
+        return 0;
     }
 
-    private static void countForwardStrands() {
-    // number on forward strand
+    private static int countForwardStrands() {
+        // number on forward strand
+        // input: String
+        // return: amount = int
+        return 0;
     }
 
-    private static void countReverseStrands() {
-    // number on reverse strand
+    private static int countReverseStrands() {
+        // number on reverse strand
+        // input: String
+        // return: amount = int
+        return 0;
     }
 }
