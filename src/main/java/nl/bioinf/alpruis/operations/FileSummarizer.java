@@ -8,23 +8,37 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.util.HashMap;
+
 public class FileSummarizer {
     private static final Logger logger = LogManager.getLogger(FileSummarizer.class.getName());
 
-    private static double gettingGcPercentage(String seq) {
+    private static Long averageLength(Map<String,String> sequence){
+        long sum = 0;
+        for (Map.Entry<String, String> entry : sequence.entrySet()) {
+            sum += entry.getValue().length();
+        }
+        return sum/sequence.size();
+    }
+
+    private static double gettingGcPercentage(Map<String, String> seq) {
         // gc-percentage
         // input: String
         // return: percentage = int
         Pattern pattern = Pattern.compile("[*C|G]");
-        Matcher matcher = pattern.matcher(seq);
         int count = 0;
-        while (matcher.find()) {
-            count++;
+        long length = 0;
+        for (Map.Entry<String, String> entry : seq.entrySet()) {
+            length += entry.getValue().length();
+            Matcher matcher = pattern.matcher(entry.getValue().toUpperCase());
+            while (matcher.find()) {
+                count++;
+            }
         }
-        return count / (double) seq.length() * 100;
+        return count / (double) length * 100;
     }
 
-    public FeatureSummary summarizeFeatures(List<Feature> features, String sequence) {
+    public FeatureSummary summarizeFeatures(List<Feature> features, Map<String,String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
         List<String> regions = new ArrayList<>();
 
@@ -58,6 +72,6 @@ public class FileSummarizer {
 
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
-        return new FeatureSummary(sequence.length(), gettingGcPercentage(sequence), countingFeatures, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
+        return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
     }
 }

@@ -64,7 +64,6 @@ public class CommandLineParser implements Runnable {
 
     @Option(names = {"-s", "--source"}, description = "Fetches or deletes the elements with this source, returns by default a gff file. If chosen can also be returned as fasta/csv/txt, use output. To use this option, write the source name/names without spaces and separate them with commas, e.g., refSeq,cDNA_match", split = ",")
     private List<String> listSource;
-// TODO strand en score??
 
 /*    @Option(names = {"-fp", "--feature_part"}, description = "Choose the feature parts you want to filter on: id, type, source, chromosome, region, atribute.")
     private List<String> listFeatureParts;
@@ -82,12 +81,12 @@ public class CommandLineParser implements Runnable {
             //TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 3)
             validateFile();
             logger.info("Making sequence...");
-            String sequence = FileUtils.sequenceMaker(inputFastaFile);
+            Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
             logger.info("Sequence has been made...");
             logger.info("Getting ready to parse GFF3 file...");
             LinkedList<Feature> gffFeatures = GffParser.gffParser(inputGffFile);
             //logger.info(gffFeatures.getFirst());
-
+            // TODO this might need to be more efficient in some way(lvl 2)
             if (summary) {
                 logger.info("Generating summary...");
                 FileSummarizer fileSummarizer = new FileSummarizer();
