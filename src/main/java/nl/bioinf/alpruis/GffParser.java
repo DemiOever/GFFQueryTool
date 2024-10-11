@@ -72,8 +72,7 @@ public class GffParser {
                     parentFeature.getStart() <= feature.getStart() &&
                     parentFeature.getEnd() >= feature.getEnd() &&
                     !parentFeature.getID().equals(feature.getID()) &&
-                    feature.getID().startsWith("gene") ) { //TODO ask teacher if this is okay or if i should include it(lvl 1) because im getting alot of not gene- looking results at the end cus those are from the cDNA_match
-                // This feature is within the region's boundaries
+                    feature.getID().startsWith("gene") ) {// This feature is within the region's boundaries
                 parentFeature.addChild(feature.getID());
                 break;
             }

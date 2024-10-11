@@ -100,7 +100,7 @@ public class GFFFeatureFunctions {
         return gffFeatures_del;
     }
 // fetch
-    public static LinkedList<Feature> FetchAttributes(LinkedList<Feature> gffFeatures_fetch, Map<String,String> mapInput) { //TODO check this method(lvl 1)
+    public static LinkedList<Feature> FetchAttributes(LinkedList<Feature> gffFeatures_fetch, Map<String,String> mapInput) {
         Iterator<Feature> iterator = gffFeatures_fetch.iterator();
 
         while (iterator.hasNext()) {
@@ -129,19 +129,19 @@ public class GFFFeatureFunctions {
 
     }
 
-    public static LinkedList<Feature> fetchId(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {//TODO check this method(lvl 1)
+    public static LinkedList<Feature> fetchId(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
         // going into hashmap getting all the features where the sequence_id is the same as id given
         gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getID()));
         return gffFeatures_fetch;
     }
 
-    public static LinkedList<Feature> fetchType(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {//TODO check this method(lvl 1)
+    public static LinkedList<Feature> fetchType(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
         // going into hashmap getting all the features where the type is the same as the type given
         gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getType()));
         return gffFeatures_fetch;
     }
 
-    public static LinkedList<Feature> fetchRegion(LinkedList<Feature> gffFeatures_fetch, List<Integer> listInput) {//TODO check this method(lvl 1)
+    public static LinkedList<Feature> fetchRegion(LinkedList<Feature> gffFeatures_fetch, List<Integer> listInput) {
         // going into hashmap getting all the features where start to stop are between the beginning and end of the region
         for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = listInput.get(i);    // Start of the region
@@ -152,42 +152,14 @@ public class GFFFeatureFunctions {
         return gffFeatures_fetch;
     }
 
-    public static LinkedList<Feature> fetchChromosome(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {//TODO check this method(lvl 1)
+    public static LinkedList<Feature> fetchChromosome(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
         gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getChromosome()));
         return gffFeatures_fetch;
     }
-    public static LinkedList<Feature> fetchSource(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {//TODO check this method(lvl 1)
+    public static LinkedList<Feature> fetchSource(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
         gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getSource()));
                 //contains(feature.getSource()));
         return gffFeatures_fetch;
     }
-
-/*    public static LinkedList<Feature> fetch(LinkedList<Feature> gffFeatures_del, String filter, List<String> input) {
-        // i have a filter and a list of features in those feature have a part for where filter goes to filter i need to see if that is the input list
-
-        for (Feature feature : gffFeatures_del) {
-            if (*//*feature.getFilter() in input*//*) {
-                continue;
-            }
-            else {
-                //delete
-            }
-        }
-        return gffFeatures_del;
-    }
-
-    public static LinkedList<Feature> delete(LinkedList<Feature> gffFeatures_del, String filter, List<String> input) {
-        // i have a filter and a list of features in those feature have a part for where filter goes to filter i need to see if that is the input list
-
-        for (Feature feature : gffFeatures_del) {
-            if (*//*feature.getFilter() in input*//*) {
-                //delete
-            }
-            else {
-                //continue
-            }
-        }
-        return gffFeatures_del;
-    }*/
 
 }
