@@ -50,38 +50,41 @@ public class FileUtils {
         return true;
     }
 
-    public static String sequenceMaker(Path inputFastaFile) {
-        StringBuilder sequence = new StringBuilder();
+    public static Map<String, String> sequenceMaker(Path inputFastaFile) {
+        Map<String, String> sequence = new HashMap<>();
+        String header = "";
+        StringBuilder seq = new StringBuilder(); // Use StringBuilder for better performance
 
         if (FileUtils.fileValidator(inputFastaFile)) {
             try (BufferedReader reader = Files.newBufferedReader(inputFastaFile)) {
                 String line;
-                boolean isHeader = true;
-                //TODO use a hashmap to save the header and sequence(lvl 2)
 
                 while ((line = reader.readLine()) != null) {
-                    // Skip the header lines starting with '>'
-                    if (line.startsWith(">")) { //TODO save the header for when they want a fasta/txt back(lvl 2)
-                        isHeader = false;
-                        continue;
-                    }
-
-                    // Append sequence lines after the header
-                    if (!isHeader) {
-                        sequence.append(line.trim().toUpperCase());
+                    // Handle header lines starting with '>'
+                    if (line.startsWith(">")) {
+                        // If there's already a header, save the previous sequence before moving to the new one
+                        if (!header.isEmpty()) {
+                            sequence.put(header, seq.toString());
+                            seq.setLength(0); // Reset the sequence for the next header
+                        }
+                        header = line; // Update header with the current line (FASTA header)
+                    } else {
+                        // Append sequence lines after the header
+                        seq.append(line);
                     }
                 }
+
+                // Put the last header and sequence after the loop finishes
+                if (!header.isEmpty()) {
+                    sequence.put(header, seq.toString());
+                }
             } catch (IOException e) {
-                //TODO create new logger(lvl 2)
-                // e.printStackTrace();
+                logger.error("Error reading the FASTA file: {}", e.getMessage());
             }
         } else {
-            //TODO create new logger(lvl 2)
             logger.warn("Invalid FASTA file.");
         }
 
-        // Return the parsed sequence as a string
-        return sequence.toString();
+        return sequence;
     }
-
 }
