@@ -10,10 +10,10 @@ import java.util.LinkedList;
 
 public class ReturnFile {
     // fasta return
-    private static void returnFasta(){ //TODO finish this method(lvl 2)
+    private static void returnFasta(){ //TODO finish this method(lvl 1)
     }
 
-    private static void returnGff(){ //TODO finish this method(lvl 2)
+    private static void returnGff(){ //TODO finish this method(lvl 1)
     }
 
     private static void returnTxt(Path outFile, LinkedList<Feature> result){ //TODO finish this method(lvl 2)
@@ -42,21 +42,21 @@ public class ReturnFile {
         // fetch_region = ggf
 
         if(Files.exists(outputFile)) { //TODO check if this is right(lvl 2)
-            //TODO make map if map not exist(lvl 2)
+            //TODO make dir if dir not exist(lvl 2)
             try {
                 Path copy = Paths.get(outputFile.toUri());
                 //delete if it already exists
                 Files.deleteIfExists(copy);
                 Files.createFile(outputFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //TODO catch this error correctly
             }
         }
         else {
             try {
                 Files.createFile(outputFile);
             } catch (IOException e) {
-                e.printStackTrace();
+                e.printStackTrace();//TODO catch this error correctly
             }
         }
         // returnFasta();
