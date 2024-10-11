@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import static nl.bioinf.alpruis.ErrorThrower.throwError;
 import static nl.bioinf.alpruis.Main.logger;
 
 public class FileUtils {
-    public static boolean fileValidator(Path inputFile_path) {
+    public static Boolean fileValidator(Path inputFile_path) {
         boolean isValid = false;
 
         try (BufferedReader reader = Files.newBufferedReader(inputFile_path)) {
@@ -20,7 +20,7 @@ public class FileUtils {
 
             if (inputFile.endsWith(".gff") || inputFile.endsWith(".gff3")) {
                 // Check if the first line is "##gff-version 3"
-                if (firstLine != null && firstLine.equals("##gff-version 3") ) {
+                if (firstLine != null && firstLine.equals("##gff-version 3") && contentGFFValid(reader)) {
                     isValid = true;
                     //TODO check gff3 file also on having 9 columns(lvl 1)
                 }
@@ -30,10 +30,29 @@ public class FileUtils {
                     isValid = fastaSequenceValidator(reader);
                 }
             }
-        } catch (IOException e) {
-            //TODO create new logger(lvl 2)
-            //Main.logger.error("Error reading file: " + e.getMessage());
+        } catch (IOException ex) {
+            throwError(ex);
 
+        }
+        return isValid;
+    }
+
+    private static boolean contentGFFValid(BufferedReader br) throws IOException {
+        boolean isValid = true;
+        try {
+            for (int i = 0; i <= 100; i++) {
+                String line = br.readLine();
+                if (!line.startsWith("#")) {
+                    String[] columns = line.split("\t");
+                    if (columns.length != 9) {
+                        logger.warn("Invalid amount of columns({}) found on row {}/100 of given GFF file", i, columns.length);
+                        isValid = false;
+                    }
+                }
+            }
+        }
+        catch (IOException ex) {
+            throwError(ex);
         }
         return isValid;
     }
