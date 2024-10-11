@@ -22,7 +22,6 @@ import java.util.Map;
 @Command(name = "GffCommandLine", mixinStandardHelpOptions = true, version = "1.0",
         description = "A command-line tool to parse and query GFF3 files.")
 // The help option is automatically included by Picocli due to mixinStandardHelpOptions = true
-// TODO there is a split and other thing look into it and us it (lvl 1)
 public class CommandLineParser implements Runnable {
     // Define the GFF3 input file as a positional argument
     @Parameters(index = "0", description = "The input GFF3 file.")
