@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class GffParser {
     public static LinkedList<Feature> gffParser(Path inputGffFile) {
@@ -27,9 +26,9 @@ public class GffParser {
     }
 
     private static void processLine(String line, LinkedList<Feature> gffFeatures, Map<String, Feature> map) {
-        if (line.startsWith("#")) return; //TODO save for when they want a gff3 file back(lvl 2)
+        if (line.startsWith("#")) return; //TODO save for when they want a gff3 file back(lvl 1)
         String[] columns = line.split("\t");
-        if (columns.length != 9) return;
+        if (columns.length != 9) return; //TODO add a logger warn
 
         String seqID = columns[0];
         String source = columns[1];
