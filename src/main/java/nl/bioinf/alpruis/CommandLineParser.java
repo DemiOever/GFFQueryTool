@@ -1,3 +1,14 @@
+/**
+ * This class is responsible for parsing command-line arguments using Picocli and executing
+ * operations related to GFF3 and FASTA file processing. It validates input files, extracts feature sequences,
+ * generates summaries, and performs delete or fetch operations on specific elements.
+ *
+ * <p>
+ * Supported operations include file validation, feature extraction by ID, type, region, chromosome,
+ * attribute, and source, with output formats like GFF, FASTA, CSV, or TXT.
+ * </p>
+ */
+
 package nl.bioinf.alpruis;
 
 import static nl.bioinf.alpruis.Main.logger;
@@ -5,160 +16,149 @@ import static nl.bioinf.alpruis.Main.logger;
 import nl.bioinf.alpruis.operations.FeatureSummary;
 import nl.bioinf.alpruis.operations.GFFFeatureFunctions;
 import nl.bioinf.alpruis.operations.FileSummarizer;
-import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 @Command(name = "GffCommandLine", mixinStandardHelpOptions = true, version = "1.0",
         description = "A command-line tool to parse and query GFF3 files.")
-// The help option is automatically included by Picocli due to mixinStandardHelpOptions = true
 public class CommandLineParser implements Runnable {
-    // Define the GFF3 input file as a positional argument
+
+    // Define input files
     @Parameters(index = "0", description = "The input GFF3 file.")
     private Path inputGffFile;
 
-    // Define the FASTA file
     @Parameters(index = "1", description = "The input FASTA file.")
     private Path inputFastaFile;
 
-    @Option(names = {"-vf","--validate"}, description = "Validates the files(both fasta and gff) if it has the right gff3 and fasta format.")
+    // Define options
+    @Option(names = {"-vf","--validate"}, description = "Validates the GFF3 and FASTA files.")
     private boolean validate;
 
-    @Option(names = {"-o", "--output_file"}, description = "Put here the location of the output file with filename, preferably with a extension(.gff/.fasta/.csv/.txt). If this is left empty one will be created for you with default name and extension.")
+    @Option(names = {"-o", "--output_file"}, description = "The output file location. If not specified, a default file will be created.")
     private Path output_file;
 
-    @Option(names = {"-sum", "--summary"}, description = "Gives back a summary of the files and includes: Creates a textual summary of the parsed file: length of the sequence, gc-percentage, feature types with the amount present, number and types of annotations/features?. Average lengths of the genes, number on forward strand, number on reverse strand. Usage is a boolean.")
+    @Option(names = {"-sum", "--summary"}, description = "Generates a summary of the file contents including feature types, GC percentage, and more.")
     private boolean summary;
 
-    @Option(names = {"-d","--delete"}, description = "Deletes given feature part/parts, default is false which means it will fetch given element. To use this simply type the -d or --delete. Needs to be combined at least with one of the following: --id, --type, --source, --chromosome, --region, --atribute.")
+    @Option(names = {"-d","--delete"}, description = "Deletes specified feature(s). If not specified, features will be fetched.")
     private boolean delete;
 
-    @Option(names = {"-e","--extended"}, description = "This allows the parent and children of the feature to be included. Default is false but when used turned to true.")
+    @Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.")
     private boolean extended;
 
-    @Option(names = {"-i", "--id"}, description = "Returns the nucleotide sequence of the element with this ID/ID's or without, default in Fasta format. To use this option please write it without spaces within ID's and a comma separating them instead, example: -i ID12345,ID67890", split = ",")
+    // Define query options
+    @Option(names = {"-i", "--id"}, description = "Fetches or deletes features by ID(s). Use a comma-separated list.", split = ",")
     private List<String> listId;
 
-    @Option(names = {"-t", "--type"}, description = "Returns the nucleotide sequence of the element with this feature type or without, default in Fasta format. If chosen can also be returned as gff/csv/txt, use output. To use this option please write it without spaces within types and a comma separating them instead, example: -t mRNA,gene.", split = ",")
+    @Option(names = {"-t", "--type"}, description = "Fetches or deletes features by type(s). Use a comma-separated list.", split = ",")
     private List<String> listType;
 
-    @Option(names = {"-a", "--attribute"}, description = "Returns the nucleotide sequence of the element with this attribute name or without, default in Fasta format. If chosen can also be returned as gff/csv/txt, use output. To use this option please write it without spaces within attribute part(e.g. name=LOC) and a comma separating them instead, example: -attr name=LOC,id=15.", split = ",")
-    private String[] listAttribute; // vb name=1 and that it's regex on the items in the attribute or not who knows
+    @Option(names = {"-a", "--attribute"}, description = "Fetches or deletes features by attribute(s). Use a comma-separated list (e.g., name=LOC,id=15).", split = ",")
+    private String[] listAttribute;
 
-    @Option(names = {"-r", "--region"}, description = "Returns all features between the given coordinates or without, default in gff format. If chosen can also be returned as fasta/csv/txt, use output. To use this option please write it without spaces within locations and a comma separating them instead, example: -r 1,200,300,400.", split = ",")
-    private List<Integer> listRegion; // maybe integer instead but it not work rn
+    @Option(names = {"-r", "--region"}, description = "Fetches or deletes features within the specified regions (start, end). Use a comma-separated list.", split = ",")
+    private List<Integer> listRegion;
 
-    @Option(names = {"-c", "--chromosome"}, description = "Returns nucleotide sequence of the chromosome(s) given or without, default in fasta format. If chosen can also be returned as gff/csv/txt, use output. To use this option please write it without spaces within chromosomes(only numbers no written) and a comma separating them instead, example: 1,2", split = ",")
+    @Option(names = {"-c", "--chromosome"}, description = "Fetches or deletes features by chromosome(s). Use a comma-separated list.", split = ",")
     private List<String> listChromosomes;
 
-    @Option(names = {"-s", "--source"}, description = "Fetches or deletes the elements with this source, returns by default a gff file. If chosen can also be returned as fasta/csv/txt, use output. To use this option, write the source name/names without spaces and separate them with commas, e.g., refSeq,cDNA_match", split = ",")
+    @Option(names = {"-s", "--source"}, description = "Fetches or deletes features by source(s). Use a comma-separated list.", split = ",")
     private List<String> listSource;
 
-/*    @Option(names = {"-fp", "--feature_part"}, description = "Choose the feature parts you want to filter on: id, type, source, chromosome, region, atribute.")
-    private List<String> listFeatureParts;
-
-    @Option(names = {"-fp", "--feature_part"}, description = "")
-    private List<String> listParts;*/
-
-
+    /**
+     * Executes the command-line options and performs the corresponding file processing tasks such as validation, feature extraction, or summary generation.
+     */
     @Override
     public void run() {
         if (validate) {
-            validateFile();
-        }
-        else {
-            //TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 3)
-            validateFile();
-            logger.info("Making sequence...");
-            Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
-            logger.info("Sequence has been made...");
-            logger.info("Getting ready to parse GFF3 file...");
-            LinkedList<Feature> gffFeatures = GffParser.gffParser(inputGffFile);
-            //logger.info(gffFeatures.getFirst());
-            // TODO this might need to be more efficient in some way(lvl 2)
-            if (summary) {
-                logger.info("Generating summary...");
-                FileSummarizer fileSummarizer = new FileSummarizer();
-                FeatureSummary summary = fileSummarizer.summarizeFeatures(gffFeatures, sequence);
-                logger.info(summary);
-                ReturnFile.main(output_file, gffFeatures);
-            } else if (listId != null || listType != null || listAttribute != null || listRegion != null || listChromosomes != null || listSource != null) {
-                // Assuming gffFeatures is defined before this block
-                if (listId != null) {
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteId(gffFeatures, listId);
-                    System.out.println(filteredFeatures);
-                }
-                if (listType != null) {
-                    String filter = "Type";
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteType(gffFeatures, listType);
-                    //LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.decideMethod(gffFeatures, sequence, filter, delete, listType, extended);
-                    System.out.println(filteredFeatures);
-                }
-                if (listAttribute != null) {
-                    String filter = "Attribute";
-                    Map<String,String> mapje = GffParser.parseAttributes(listAttribute);
-                    System.out.println(mapje);
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteAttributes(gffFeatures, mapje);
-                    //gffFeatures = GFFFeatureFunctions.decideMethod(gffFeatures, sequence, filter, delete, listAttribute, extended);
-                    System.out.println(filteredFeatures);
-                }
-                if (listRegion != null) {
-                    String filter = "Region";
-                    System.out.println(listRegion);
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteRegion(gffFeatures, listRegion);
-                    // gffFeatures = GFFFeatureFunctions.decideMethod(gffFeatures, sequence, filter, delete, listRegion, extended);
-                    System.out.println(filteredFeatures);
-                }
-                if (listChromosomes != null) {
-                    String filter = "Chromosome";
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteChromosome(gffFeatures, listChromosomes);
-                    //gffFeatures = GFFFeatureFunctions.decideMethod(gffFeatures, sequence, filter, delete, listChromosomes, extended);
-                    System.out.println(filteredFeatures);
-                }
-                if (listSource != null) {
-                    String filter = "Source";
-                    LinkedList<Feature> filteredFeatures = GFFFeatureFunctions.deleteSource(gffFeatures, listSource);
-                    //gffFeatures = GFFFeatureFunctions.decideMethod(gffFeatures, sequence, filter, delete, listSource, extended);
-                    System.out.println(filteredFeatures);
-                }
-            }
-            else {
-                logger.warn("You may have gave the command a null which is not accepted as an option."); //TODO create new logger(lvl 2)
-            }
-            //ReturnFile returned = new ReturnFile();
-            //logger.info("first: {} \n last: {}", gffFeatures.getFirst(), gffFeatures.getLast());
+            validateFiles();
+        } else {
+            validateFiles(); // Always validate before processing
+            processFiles();
         }
     }
 
-    private void validateFile() {
+    /**
+     * Validates GFF3 and FASTA files and logs the result.
+     */
+    private void validateFiles() {
         logger.info("Validating GFF3 file...");
-        boolean validatedGff = FileUtils.fileValidator(inputGffFile);
-        logger.info("Validating Fasta file...");
-        boolean validatedFasta = FileUtils.fileValidator(inputFastaFile);
-        if (validatedGff && validatedFasta) {
-            logger.info("Both files content are valid to use.");
-        }
-        else if (validatedGff) {
-            logger.warn("Only the Gff file is valid, Fasta file isnt up to standard."); //TODO create new logger(lvl 2)
-        }
-        else if (validatedFasta) {
-            logger.warn("Only the Fasta file is valid, Gff file isnt up to standard."); //TODO create new logger(lvl 2)
-        }
-        else{
-            logger.warn("Both files content are not valid to use."); //TODO create new logger(lvl 2)
+        boolean gffValid = FileUtils.fileValidator(inputGffFile);
 
+        logger.info("Validating FASTA file...");
+        boolean fastaValid = FileUtils.fileValidator(inputFastaFile);
+
+        if (gffValid && fastaValid) {
+            logger.info("Both files are valid.");
+        } else if (!gffValid) {
+            logger.fatal("Invalid GFF3 file.");
+            System.exit(1);
+        } else if (!fastaValid) {
+            logger.fatal("Invalid FASTA file.");
+            System.exit(1);
+        } else {
+            logger.info("All files are invalid.");
+            System.exit(1);
         }
+    }
+
+    /**
+     * Processes GFF3 and FASTA files based on the command-line options.
+     */
+    private void processFiles() {//TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 3)
+        logger.info("Making sequence...");
+        Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
+        logger.info("Sequence has been made...");
+        logger.info("Getting ready to parse GFF3 file...");
+        LinkedList<Feature> gffFeatures = GffParser.gffParser(inputGffFile);
+
+        if (summary) {
+            generateSummary(gffFeatures, sequence);
+        } else {
+            filterFeatures(gffFeatures, sequence);
+        }
+    }
+
+    /**
+     * Generates a summary of the GFF3 and FASTA files.
+     */
+    private void generateSummary(LinkedList<Feature> gffFeatures, Map<String, String> sequence) {
+        logger.info("Generating summary...");
+        FeatureSummary summary = new FileSummarizer().summarizeFeatures(gffFeatures, sequence);
+        logger.info(summary);
+        ReturnFile.chooseTypeFile(output_file, gffFeatures, sequence);
+    }
+
+    /**
+     * Filters features based on command-line options.
+     */
+    private void filterFeatures(LinkedList<Feature> gffFeatures, Map<String, String> sequence) {
+        if (listId != null) {
+            gffFeatures = delete ? GFFFeatureFunctions.deleteId(gffFeatures, listId) : GFFFeatureFunctions.fetchId(gffFeatures, listId);
+        }
+        if (listType != null) {
+            gffFeatures = delete ? GFFFeatureFunctions.deleteType(gffFeatures, listType) : GFFFeatureFunctions.fetchType(gffFeatures, listType);
+        }
+        if (listAttribute != null) {
+            Map<String, String> attributes = GffParser.parseAttributes(listAttribute);
+            gffFeatures = delete ? GFFFeatureFunctions.deleteAttributes(gffFeatures, attributes) : GFFFeatureFunctions.FetchAttributes(gffFeatures, attributes);
+        }
+        if (listRegion != null) {
+            gffFeatures = delete ? GFFFeatureFunctions.deleteRegion(gffFeatures, listRegion) : GFFFeatureFunctions.fetchRegion(gffFeatures, listRegion);
+        }
+        if (listChromosomes != null) {
+            gffFeatures = delete ? GFFFeatureFunctions.deleteChromosome(gffFeatures, listChromosomes) : GFFFeatureFunctions.fetchChromosome(gffFeatures, listChromosomes);
+        }
+        if (listSource != null) {
+            gffFeatures = delete ? GFFFeatureFunctions.deleteSource(gffFeatures, listSource) : GFFFeatureFunctions.fetchSource(gffFeatures, listSource);
+        }
+
+        ReturnFile.chooseTypeFile(output_file, gffFeatures, sequence);
     }
 }
-
-
