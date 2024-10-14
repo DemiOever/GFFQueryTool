@@ -84,7 +84,7 @@ java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>]
 For questions or further support, feel free to reach out:
 
 - **A.L. Pruis**: a.l.pruis@st.hanze.nl
-- **D. van T. Oever**: d.van.t.oever.st.hanze.nl
+- **D. van 't Oever**: d.van.t.oever@st.hanze.nl
 
 ---
 
