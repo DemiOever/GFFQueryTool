@@ -57,9 +57,11 @@ java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>]
 | **-vf, --validate** | Validates the input GFF and FASTA files for correct format.                                                                                                                                            |
 
 ---
+
 ### Data
 Data examples can be found in the following directory: src/main/resources/data. There are 4 files a short and medium length
 version of the Mus Muscullus organism commonly known as house mouse.
+
 ---
 
 ## Example Usage
@@ -85,6 +87,7 @@ version of the Mus Muscullus organism commonly known as house mouse.
    ```
 
 ---
+
 ## Ongoing processes
 * Implement the more effective way for the functions, that we have in mind.
 * Use the extended version
@@ -92,6 +95,7 @@ version of the Mus Muscullus organism commonly known as house mouse.
 * Save the headers when parsing for writing away to GFF3 format
 * Rethink of rewrite the options in the commandline to be easier to use and more clear
 * Look at classes and/of methods that are time-consuming and implement a better way to do that task 
+
 ---
 
 ## FAQ
