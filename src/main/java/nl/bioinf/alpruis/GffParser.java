@@ -49,12 +49,9 @@ public class GffParser {
      * @param map a map to store features by their ID for efficient lookup.
      */
     private static void processLine(String line, LinkedList<Feature> gffFeatures, Map<String, Feature> map) {
-        if (line.startsWith("#")) return; // Skip comment lines
+        if (line.startsWith("#")) return; // TODO save headers in ArrayList (lvl 1)
 
-        String[] columns = line.split("\t");
-        if (columns.length != 9) return; // Invalid line, should have 9 columns in GFF3
-        //TODO add a logger warn
-        // Parse the feature details from the columns
+        String[] columns = line.split("\t"); // Parse the feature details from the columns
         String seqID = columns[0];
         String source = columns[1];
         String type = columns[2];
@@ -70,9 +67,8 @@ public class GffParser {
         gffFeatures.add(feature);
 
         // Store feature if it has an ID
-        String featureID = feature.getID();
-        if (featureID != null) {
-            map.put(featureID, feature);
+        if (feature.getID() != null) {
+            map.put(feature.getID(), feature); // TODO might need to be a list instead (lvl 1)
         }
 
         // Check if the feature has a Parent attribute
