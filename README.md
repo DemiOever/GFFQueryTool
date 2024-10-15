@@ -1,6 +1,6 @@
 # GFF Query Tool
-
-###### The **GFF Query Tool** is a command-line utility designed to parse, query, and manipulate GFF3 and FASTA files. It provides powerful features to search for specific attributes, chromosomes, IDs, regions, sources, and feature types within GFF3 files and return corresponding nucleotide sequences in various formats.
+---
+The **GFF Query Tool** is a command-line utility designed to parse, query, and manipulate GFF3 and FASTA files. It provides powerful features to search for specific attributes, chromosomes, IDs, regions, sources, and feature types within GFF3 files and return corresponding nucleotide sequences in various formats.
 At the moment only able to run in a linux based commandline.
 ---
 
@@ -53,7 +53,7 @@ java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>]
 | **-V, --version** | Displays the tool's version information.                                                                                                                                                               |
 | **-vf, --validate** | Validates the input GFF and FASTA files for correct format.                                                                                                                                            |
 
-___
+---
 ### Data
 Data examples can be found in the following directory: src/main/resources/data. There are 4 files a short and medium length
 version of the Mus Muscullus organism commonly known as house mouse.
@@ -89,7 +89,7 @@ version of the Mus Muscullus organism commonly known as house mouse.
 * Save the headers when parsing for writing away to GFF3 format
 * Rethink of rewrite the options in the commandline to be easier to use and more clear
 * Look at classes and/of methods that are time-consuming and implement a better way to do that task 
-___
+---
 
 ## FAQ
 
