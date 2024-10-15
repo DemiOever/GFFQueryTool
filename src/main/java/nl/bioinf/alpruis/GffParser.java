@@ -26,12 +26,14 @@ public class GffParser {
     public static LinkedList<Feature> gffParser(Path inputGffFile) {
         LinkedList<Feature> gffFeatures = new LinkedList<>();
         Map<String, Feature> map = new HashMap<>();
+        List<String> headers = new ArrayList<>();
+
         try (BufferedReader reader = Files.newBufferedReader(inputGffFile)) {
             String line;
 
             // Process each line of the GFF3 file
             while ((line = reader.readLine()) != null) {
-                processLine(line, gffFeatures, map);
+                processLine(line, gffFeatures, map, headers);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,8 +50,11 @@ public class GffParser {
      * @param gffFeatures the LinkedList that stores all parsed Feature objects.
      * @param map a map to store features by their ID for efficient lookup.
      */
-    private static void processLine(String line, LinkedList<Feature> gffFeatures, Map<String, Feature> map) {
-        if (line.startsWith("#")) return; // TODO save headers in ArrayList (lvl 1)
+    private static void processLine(String line, LinkedList<Feature> gffFeatures, Map<String, Feature> map, List<String> headers) {
+        if (line.startsWith("#")) {
+            headers.add(line);  // Add header to the list
+            return;
+        }
 
         String[] columns = line.split("\t"); // Parse the feature details from the columns
         String seqID = columns[0];
@@ -68,7 +73,7 @@ public class GffParser {
 
         // Store feature if it has an ID
         if (feature.getID() != null) {
-            map.put(feature.getID(), feature); // TODO might need to be a list instead (lvl 1)
+            map.put(feature.getID(), feature);
         }
 
         // Check if the feature has a Parent attribute

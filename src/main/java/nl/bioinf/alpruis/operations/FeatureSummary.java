@@ -11,6 +11,7 @@ public class FeatureSummary {
     private Long seqLength;
     private double percentageGC;
     private Map<String, Integer> countingFeatures;
+    private Map<String, Integer> countingSources;
     private List<String> regions;
     private int countGenes;
     private long avgLengthGenes;
@@ -29,10 +30,11 @@ public class FeatureSummary {
      * @param forwardStrands The number of features located on the forward strand.
      * @param reverseStrands The number of features located on the reverse strand.
      */
-    public FeatureSummary(Long seqLength, double percentageGC, Map<String, Integer> countingFeatures, List<String> regions, int countGenes, long avgLengthGenes, int forwardStrands, int reverseStrands) {
+    public FeatureSummary(Long seqLength, double percentageGC, Map<String, Integer> countingFeatures, Map<String, Integer> countingSources, List<String> regions, int countGenes, long avgLengthGenes, int forwardStrands, int reverseStrands) {
         this.seqLength = seqLength;
         this.percentageGC = percentageGC;
         this.countingFeatures = countingFeatures;
+        this.countingSources = countingSources;
         this.regions = regions;
         this.countGenes = countGenes;
         this.avgLengthGenes = avgLengthGenes;
@@ -51,6 +53,7 @@ public class FeatureSummary {
                 "avgSeqLength=" + seqLength +
                 ", AvgPercentageGC=" + percentageGC +
                 ", countingFeatures=" + countingFeatures +
+                ", countingSources=" + countingSources +
                 ", countGenes=" + countGenes +
                 ", avgLengthGenes=" + avgLengthGenes +
                 ", forwardStrands=" + forwardStrands +

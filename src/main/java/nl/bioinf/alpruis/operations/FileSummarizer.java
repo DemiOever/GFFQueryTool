@@ -66,15 +66,20 @@ public class FileSummarizer {
      */
     public FeatureSummary summarizeFeatures(List<Feature> features, Map<String,String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
+        Map<String, Integer> countingSources = new HashMap<>();
+
         List<String> regions = new ArrayList<>();
 
         int countGenes = 0;
         long lengthGenes = 0;
         int forwardStrands = 0;
         int reverseStrands = 0;
+        int unknownStrands = 0;
 
         for (Feature feature : features) {
             countingFeatures.put(feature.getType(), countingFeatures.getOrDefault(feature.getType(), 0) + 1);
+            countingSources.put(feature.getSource(), countingSources.getOrDefault(feature.getSource(), 0) + 1);
+
 
             if (Objects.equals(feature.getType(), "gene")) {
                 countGenes++;
@@ -87,17 +92,19 @@ public class FileSummarizer {
                 forwardStrands++;
             } else if (Objects.equals(strand, "-")) {
                 reverseStrands++;
-            } else {
-                logger.fatal("Unknown stand direction: " + strand);
+            } else if (Objects.equals(strand, ".")) {
+                unknownStrands++;
+            }else {
+                logger.error("Unknown stand direction: " + strand);
             }
 
             if (Objects.equals(feature.getType(), "region")) {
                 regions.add(feature.getChromosome());
             }
         }
-
+        logger.warn("In the strand column are {} found as empty.", unknownStrands);
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
-        return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
+        return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, countingSources, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
     }
 }

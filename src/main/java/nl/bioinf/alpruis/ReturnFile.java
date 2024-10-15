@@ -91,7 +91,7 @@ public class ReturnFile {
 
     /**
      * Determines the file type based on the file extension and writes the features to the appropriate format.
-     * Supports FASTA, GFF, CSV, and plain text formats.
+     * Supports FASTA, GFF, CSV, and plain text formats. For unsupported formats, writes to a default GFF file.
      *
      * @param outputFile The output file path.
      * @param result The list of features to write.
@@ -99,6 +99,36 @@ public class ReturnFile {
      */
     public static void chooseTypeFile(Path outputFile, LinkedList<Feature> result, Map<String, String> seq) {
         String fileName = outputFile.getFileName().toString().toLowerCase();
+
+        // Handle different output formats based on file extension
+        if (fileName.endsWith(".fasta")) {
+            checkFileDir(outputFile);
+            returnFasta(outputFile, result, seq);
+        } else if (fileName.endsWith(".gff")) {
+            checkFileDir(outputFile);
+            returnGff(outputFile, result);
+        } else if (fileName.endsWith(".csv")) {
+            checkFileDir(outputFile);
+            returnCsv(outputFile, result);
+        } else if (fileName.endsWith(".txt")) {
+            checkFileDir(outputFile);
+            returnTxt(outputFile, result);
+        } else {
+            // Unsupported file format, default to GFF output
+            logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
+            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
+
+            // Create a default path for the output file
+            Path defaultOutFile = outputFile.getParent() != null ?
+                    outputFile.getParent().resolve("output_GFQueryTool.gff") :
+                    Path.of("output_GFQueryTool.gff");
+
+            // Write to the default GFF file
+            returnGff(defaultOutFile, result);
+        }
+    }
+
+    private static void checkFileDir(Path outputFile) {
 
         // Create directory if it doesn't exist
         Path parentDir = outputFile.getParent();
@@ -118,22 +148,6 @@ public class ReturnFile {
             Files.createFile(outputFile);
         } catch (IOException ex) {
             ErrorThrower.throwError(ex);
-        }
-
-        // Handle different output formats based on file extension
-        if (fileName.endsWith(".fasta")) {
-            returnFasta(outputFile, result, seq);
-        } else if (fileName.endsWith(".gff")) {
-            returnGff(outputFile, result);
-        } else if (fileName.endsWith(".csv")) {
-            returnCsv(outputFile, result);
-        } else if (fileName.endsWith(".txt")) {
-            returnTxt(outputFile, result);
-        } else {
-            logger.error("Unsupported file format: {}. Writing to default type of file.", fileName); // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
-            //Path outFile = (Path) "./output_GFQueryTool.gff";
-            returnGff(outputFile, result);
-
         }
     }
 }

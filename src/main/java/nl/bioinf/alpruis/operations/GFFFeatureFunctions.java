@@ -1,6 +1,7 @@
 package nl.bioinf.alpruis.operations;
 
 import nl.bioinf.alpruis.Feature;
+import static nl.bioinf.alpruis.Main.logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,10 +17,10 @@ public class GFFFeatureFunctions {
      * Deletes features from the list that match specific attribute key-value pairs.
      *
      * @param gffFeatures_del LinkedList of GFF features to be filtered.
-     * @param listInput Map containing attribute key-value pairs to match for deletion.
+     * @param mapInput Map containing attribute key-value pairs to match for deletion.
      * @return The filtered LinkedList of GFF features.
      */
-    public static LinkedList<Feature> deleteAttributes(LinkedList<Feature> gffFeatures_del, Map<String, String> listInput) {
+    public static LinkedList<Feature> deleteAttributes(LinkedList<Feature> gffFeatures_del, Map<String, String> mapInput) {
         Iterator<Feature> iterator = gffFeatures_del.iterator();
 
         while (iterator.hasNext()) {
@@ -28,7 +29,7 @@ public class GFFFeatureFunctions {
 
             boolean shouldRemove = false;
 
-            for (Map.Entry<String, String> entry : listInput.entrySet()) {
+            for (Map.Entry<String, String> entry : mapInput.entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
 

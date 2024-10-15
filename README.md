@@ -93,8 +93,9 @@ version of the Mus Muscullus organism commonly known as house mouse.
 * Writing in fasta format to a fasta file when chosen
 * Save the headers when parsing for writing away to GFF3 format
 * Rethink of rewrite the options in the commandline to be easier to use and more clear
-* Look at classes and/of methods that are time-consuming and implement a better way to do that task 
+* Look at classes and/of methods that are time-consuming and implement a better way to do that task. At the moment we are working on filtering during parsing the gff file because it is the task that takes the longest.
 * Making all the tests for the methods/classes
+* If no outfile has been given or an invalid one then it should be written to a default gff file.
 
 ---
 
