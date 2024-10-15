@@ -89,11 +89,12 @@ version of the Mus Muscullus organism commonly known as house mouse.
 
 ## Ongoing processes
 * Implement the more effective way for the functions, that we have in mind.
-* Use the extended version
+* Use the extended option to include Children 
 * Writing in fasta format to a fasta file when chosen
 * Save the headers when parsing for writing away to GFF3 format
 * Rethink of rewrite the options in the commandline to be easier to use and more clear
 * Look at classes and/of methods that are time-consuming and implement a better way to do that task 
+* Making all the tests for the methods/classes
 
 ---
 
