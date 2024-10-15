@@ -10,7 +10,21 @@ import java.util.Map;
 import static nl.bioinf.alpruis.ErrorThrower.throwError;
 import static nl.bioinf.alpruis.Main.logger;
 
+/**
+ * Utility class providing functions for validating and processing files, specifically GFF3 and FASTA files.
+ */
 public class FileUtils {
+
+    /**
+     * Validates a GFF3 or FASTA file based on its extension and content.
+     * - GFF3 files are validated by checking if they start with "##gff-version 3"
+     *   and ensuring that they have the correct number of columns.
+     * - FASTA files are validated by ensuring that the first line starts with ">" and
+     *   that the subsequent sequence contains valid nucleotides (A, T, C, G, N).
+     *
+     * @param inputFile_path the path to the file to be validated.
+     * @return true if the file is valid, false otherwise.
+     */
     public static Boolean fileValidator(Path inputFile_path) {
         boolean isValid = false;
 
@@ -32,11 +46,17 @@ public class FileUtils {
             }
         } catch (IOException ex) {
             throwError(ex);
-
         }
         return isValid;
     }
 
+    /**
+     * Checks the first 100 lines of a GFF3 file to ensure each line (excluding comment lines) has exactly 9 columns.
+     *
+     * @param br the BufferedReader for reading the GFF3 file.
+     * @return true if the file content is valid, false otherwise.
+     * @throws IOException if an I/O error occurs while reading the file.
+     */
     private static boolean contentGFFValid(BufferedReader br) throws IOException {
         boolean isValid = true;
         try {
@@ -51,12 +71,20 @@ public class FileUtils {
                 }
             }
         }
-        catch (IOException ex) {
+        catch (IOException ex) { //TODO FileNotFoundException
             throwError(ex);
         }
         return isValid;
     }
 
+    /**
+     * Validates the nucleotide sequence of a FASTA file. It ensures that the sequence
+     * only contains valid nucleotide characters (A, T, C, G, N).
+     *
+     * @param br the BufferedReader for reading the FASTA file.
+     * @return true if the sequence is valid, false otherwise.
+     * @throws IOException if an I/O error occurs while reading the file.
+     */
     static boolean fastaSequenceValidator(BufferedReader br) throws IOException {
         String line;
         while ((line = br.readLine()) != null) {
@@ -69,6 +97,13 @@ public class FileUtils {
         return true;
     }
 
+    /**
+     * Parses a FASTA file and constructs a map where each sequence is stored with its corresponding header.
+     * The header starts with ">" and the sequence consists of the nucleotide characters.
+     *
+     * @param inputFastaFile the path to the input FASTA file.
+     * @return a map where keys are FASTA headers and values are the corresponding sequences.
+     */
     public static Map<String, String> sequenceMaker(Path inputFastaFile) {
         Map<String, String> sequence = new HashMap<>();
         String header = "";
@@ -97,11 +132,11 @@ public class FileUtils {
                 if (!header.isEmpty()) {
                     sequence.put(header, seq.toString());
                 }
-            } catch (IOException e) {
-                logger.error("Error reading the FASTA file: {}", e.getMessage());
+            } catch (IOException ex) {
+                ErrorThrower.throwError(ex);
             }
         } else {
-            logger.warn("Invalid FASTA file.");
+            logger.fatal("Invalid FASTA file.");
         }
 
         return sequence;

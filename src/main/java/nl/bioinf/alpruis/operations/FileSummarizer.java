@@ -10,9 +10,19 @@ import java.util.regex.Pattern;
 
 import java.util.HashMap;
 
+/**
+ * Utility class to provide summary statistics for biological sequence files and GFF3 features.
+ * This class summarizes sequences and features such as gene counts, strand directions, and GC content.
+ */
 public class FileSummarizer {
     private static final Logger logger = LogManager.getLogger(FileSummarizer.class.getName());
 
+    /**
+     * Calculates the average length of the sequences in a given map of FASTA sequences.
+     *
+     * @param sequence a map containing FASTA headers as keys and their corresponding sequences as values.
+     * @return the average sequence length.
+     */
     private static Long averageLength(Map<String,String> sequence){
         long sum = 0;
         for (Map.Entry<String, String> entry : sequence.entrySet()) {
@@ -21,6 +31,13 @@ public class FileSummarizer {
         return sum/sequence.size();
     }
 
+    /**
+     * Calculates the GC content percentage in the provided sequences.
+     * The GC content is determined by counting the occurrences of G and C in the sequences.
+     *
+     * @param seq a map containing FASTA headers as keys and their corresponding sequences as values.
+     * @return the GC percentage as a double.
+     */
     private static double gettingGcPercentage(Map<String, String> seq) {
         // gc-percentage
         // input: String
@@ -38,6 +55,15 @@ public class FileSummarizer {
         return count / (double) length * 100;
     }
 
+    /**
+     * Summarizes the features from a list of GFF3 features and FASTA sequences,
+     * providing statistics such as gene count, average gene length, strand direction counts,
+     * and the types of features present.
+     *
+     * @param features a list of Feature objects parsed from a GFF3 file.
+     * @param sequence a map of sequences from a FASTA file.
+     * @return a FeatureSummary object containing various statistics about the features and sequences.
+     */
     public FeatureSummary summarizeFeatures(List<Feature> features, Map<String,String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
         List<String> regions = new ArrayList<>();
@@ -62,7 +88,7 @@ public class FileSummarizer {
             } else if (Objects.equals(strand, "-")) {
                 reverseStrands++;
             } else {
-                logger.warn("Unknown stand direction: " + strand);
+                logger.fatal("Unknown stand direction: " + strand);
             }
 
             if (Objects.equals(feature.getType(), "region")) {
