@@ -23,7 +23,7 @@ public class ReturnFile {
      * @param result The list of features to write.
      * @param seq A map containing sequences, typically chromosome sequences, that relate to the features.
      */
-    private static void returnFasta(Path outFile, LinkedList<Feature> result, Map<String, String> seq) {
+    private static void returnFasta(Path outFile, LinkedList<Feature> result, Map<String, String> seq) { //TODO make the method work (lvl 3)
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
             for (Feature feature : result) {
                 writer.write(">Feature " + feature.getID()); // Writes feature ID as FASTA header
@@ -78,7 +78,7 @@ public class ReturnFile {
      */
     private static void returnCsv(Path outFile, LinkedList<Feature> result) {
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-            writer.write("ID,Type,Start,End,Strand,Attributes"); // Writes CSV header
+            writer.write("ID,Source,Type,Start,End,Score,Strand,Phase,Attributes"); // Writes CSV header
             writer.newLine();
             for (Feature feature : result) {
                 writer.write(feature.toCsvFormat()); // Writes feature in CSV format
@@ -130,7 +130,9 @@ public class ReturnFile {
         } else if (fileName.endsWith(".txt")) {
             returnTxt(outputFile, result);
         } else {
-            logger.error("Unsupported file format: {}. Writing to default type of file.", fileName);
+            logger.error("Unsupported file format: {}. Writing to default type of file.", fileName); // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
+            //Path outFile = (Path) "./output_GFQueryTool.gff";
+            returnGff(outputFile, result);
 
         }
     }
