@@ -11,6 +11,7 @@
 
 package nl.bioinf.alpruis;
 
+import static nl.bioinf.alpruis.FileUtils.fileValidator;
 import static nl.bioinf.alpruis.Main.logger;
 
 import nl.bioinf.alpruis.operations.FeatureSummary;
@@ -49,8 +50,8 @@ public class CommandLineParser implements Runnable {
     @Option(names = {"-d","--delete"}, description = "Deletes specified feature(s). If not specified, features will be fetched.")
     private boolean delete;
 
-    @Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.")
-    private boolean extended;
+    @Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.") // TODO overthink (lvl 2)
+    private boolean extended; // TODO make this work somehow (lvl 3)
 
     // Define query options
     @Option(names = {"-i", "--id"}, description = "Fetches or deletes features by ID(s). Use a comma-separated list.", split = ",")
@@ -71,6 +72,10 @@ public class CommandLineParser implements Runnable {
     @Option(names = {"-s", "--source"}, description = "Fetches or deletes features by source(s). Use a comma-separated list.", split = ",")
     private List<String> listSource;
 
+    //TODO there is a way to make it more efficient and the list of options shorter (lvl2)
+
+    // @Option(names="-j", description = "column name = list with things to fetch or delete")
+
     /**
      * Executes the command-line options and performs the corresponding file processing tasks such as validation, feature extraction, or summary generation.
      */
@@ -89,10 +94,10 @@ public class CommandLineParser implements Runnable {
      */
     private void validateFiles() {
         logger.info("Validating GFF3 file...");
-        boolean gffValid = FileUtils.fileValidator(inputGffFile);
+        boolean gffValid = fileValidator(inputGffFile);
 
         logger.info("Validating FASTA file...");
-        boolean fastaValid = FileUtils.fileValidator(inputFastaFile);
+        boolean fastaValid = fileValidator(inputFastaFile);
 
         if (gffValid && fastaValid) {
             logger.info("Both files are valid.");
@@ -103,7 +108,7 @@ public class CommandLineParser implements Runnable {
             logger.fatal("Invalid FASTA file.");
             System.exit(1);
         } else {
-            logger.info("All files are invalid.");
+            logger.info("Both files are invalid.");
             System.exit(1);
         }
     }
@@ -111,7 +116,7 @@ public class CommandLineParser implements Runnable {
     /**
      * Processes GFF3 and FASTA files based on the command-line options.
      */
-    private void processFiles() {//TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 3)
+    private void processFiles() {//TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 4)
         logger.info("Making sequence...");
         Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
         logger.info("Sequence has been made...");
@@ -131,14 +136,14 @@ public class CommandLineParser implements Runnable {
     private void generateSummary(LinkedList<Feature> gffFeatures, Map<String, String> sequence) {
         logger.info("Generating summary...");
         FeatureSummary summary = new FileSummarizer().summarizeFeatures(gffFeatures, sequence);
-        logger.info(summary);
-        ReturnFile.chooseTypeFile(output_file, gffFeatures, sequence);
+        System.out.print(summary);
+        //ReturnFile.chooseTypeFile(output_file, gffFeatures, sequence);
     }
 
     /**
      * Filters features based on command-line options.
      */
-    private void filterFeatures(LinkedList<Feature> gffFeatures, Map<String, String> sequence) {
+    private void filterFeatures(LinkedList<Feature> gffFeatures, Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change aswell (lvl 2)
         if (listId != null) {
             gffFeatures = delete ? GFFFeatureFunctions.deleteId(gffFeatures, listId) : GFFFeatureFunctions.fetchId(gffFeatures, listId);
         }
