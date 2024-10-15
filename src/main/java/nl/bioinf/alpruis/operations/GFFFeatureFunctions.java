@@ -5,15 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-
+// TODO logger.warn for when the given list with options includes one that simply doesn't exist (lvl 1)
+// TODO rewrite in a more efficient way for less methods and less code repeating (lvl 2)
 /**
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
-//TODO can this be better like 1 default method with calls to others (lvl2)
 public class GFFFeatureFunctions {
-    private static final Logger logger = LogManager.getLogger(GFFFeatureFunctions.class.getName());
-
     /**
      * Deletes features from the list that match specific attribute key-value pairs.
      *
