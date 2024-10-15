@@ -29,6 +29,8 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jhdf/jhdf
     implementation group: 'io.jhdf', name: 'jhdf', version: '0.8.2'
 
+    // https://site.mockito.org/
+    testImplementation "org.mockito:mockito-core:3.+"
 }
 
 test {
