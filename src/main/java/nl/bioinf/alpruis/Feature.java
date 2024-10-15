@@ -49,24 +49,6 @@ public class Feature {
     }
 
     /**
-     * Retrieves the unique ID of the feature from its attributes.
-     *
-     * @return the ID of the feature.
-     */
-    public String getID() {
-        return attributes.get("ID");
-    }
-
-    /**
-     * Retrieves the chromosome (or sequence ID) this feature is located on from its attributes.
-     *
-     * @return the chromosome or sequence ID.
-     */
-    public String getChromosome() {
-        return attributes.get("chromosome");
-    }
-
-    /**
      * Gets the sequence ID (e.g., chromosome or contig) where this feature is located.
      *
      * @return the sequence ID.
@@ -130,6 +112,24 @@ public class Feature {
     }
 
     /**
+     * Retrieves the unique ID of the feature from its attributes.
+     *
+     * @return the ID of the feature.
+     */
+    public String getID() {
+        return attributes.get("ID");
+    }
+
+    /**
+     * Retrieves the chromosome (or sequence ID) this feature is located on from its attributes.
+     *
+     * @return the chromosome or sequence ID.
+     */
+    public String getChromosome() {
+        return attributes.get("chromosome");
+    }
+
+    /**
      * Retrieves the parent ID of this feature from its attributes, indicating hierarchical relationships.
      *
      * @return the parent ID of the feature, or null if not applicable.
@@ -173,7 +173,6 @@ public class Feature {
                 ", strand='" + strand + '\'' +
                 ", phase='" + phase + '\'' +
                 ", attributes=" + attributes +
-                ", children=" + children +
                 '}';
     }
 
@@ -216,7 +215,7 @@ public class Feature {
      *
      * @return a string describing this feature.
      */
-    public String atributesToString() {
+    public String atributesToString() { //TODO thr last ; shouldn't be there (lvl 1)
         StringBuilder sb = new StringBuilder();
         for (String attr : attributes.keySet()) {
             String value = attributes.get(attr);
