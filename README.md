@@ -56,7 +56,6 @@ java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>]
 | **-V, --version** | Displays the tool's version information.                                                                                                                                                               |
 | **-vf, --validate** | Validates the input GFF and FASTA files for correct format.                                                                                                                                            |
 
----
 
 ### Data
 Data examples can be found in the following directory: src/main/resources/data. There are 4 files a short and medium length
