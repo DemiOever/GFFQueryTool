@@ -1,7 +1,10 @@
 # GFF Query Tool
+
 ---
+
 The **GFF Query Tool** is a command-line utility designed to parse, query, and manipulate GFF3 and FASTA files. It provides powerful features to search for specific attributes, chromosomes, IDs, regions, sources, and feature types within GFF3 files and return corresponding nucleotide sequences in various formats.
 At the moment only able to run in a linux based commandline.
+
 ---
 
 ## Installation
