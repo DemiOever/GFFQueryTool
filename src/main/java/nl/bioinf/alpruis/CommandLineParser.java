@@ -50,7 +50,7 @@ public class CommandLineParser implements Runnable {
     @Option(names = {"-d","--delete"}, description = "Deletes specified feature(s). If not specified, features will be fetched.")
     private boolean delete;
 
-    @Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.") // TODO overthink (lvl 2)
+    @Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.") // TODO rethink to use might to be too much work (lvl 2)
     private boolean extended; // TODO make this work somehow (lvl 3)
 
     // Define query options
