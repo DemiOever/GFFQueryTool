@@ -1,6 +1,7 @@
 package nl.bioinf.alpruis;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,7 +44,7 @@ public class FileUtils {
                     isValid = fastaSequenceValidator(reader);
                 }
             }
-        } catch (IOException ex) { //TODO make FileNotFoundException for this method (lvl 1)
+        } catch (IOException ex) {
             throwError(ex);
         }
         return isValid;

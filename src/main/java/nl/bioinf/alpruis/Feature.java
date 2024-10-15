@@ -190,7 +190,7 @@ public class Feature {
                 score +'\t' +
                 strand +'\t' +
                 phase +'\t' +
-                atributesToString()
+                attributesToString()
                 ;
     }
 
@@ -208,19 +208,20 @@ public class Feature {
                 score +',' +
                 strand +',' +
                 phase +',' +
-                atributesToString();
+                attributesToString();
     }
     /**
      * Provides a string representation of the attributes for CSV and GFF3 format.
      *
      * @return a string describing this feature.
      */
-    public String atributesToString() { //TODO thr last ; shouldn't be there (lvl 1)
+    public String attributesToString() {
         StringBuilder sb = new StringBuilder();
         for (String attr : attributes.keySet()) {
             String value = attributes.get(attr);
             sb.append(attr + "=" + value + ";");
         }
-        return sb.toString();
+        // Remove the trailing semicolon
+        return sb.toString().replaceAll(";$", "");
     }
 }
