@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Logger;
 
 import static nl.bioinf.alpruis.Main.logger;
 
@@ -18,7 +17,7 @@ import static nl.bioinf.alpruis.Main.logger;
  * features and their parent-child relationships.
  */
 public class GffParser {
-
+// TODO if the list given is used all of them like with ID then stop parsing and if its not empty at the end of parsing then give back with left over
     /**
      * Parses the provided GFF3 file and returns a LinkedList of Feature objects.
      * Each feature is parsed line by line, and parent-child relationships are handled.

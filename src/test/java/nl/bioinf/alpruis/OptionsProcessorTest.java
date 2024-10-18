@@ -45,7 +45,7 @@ public class OptionsProcessorTest {
     @Test
     void optionsProcessorTest() {
         OptionsProcessor optionsProcessor = new OptionsProcessor(
-                inputGffFile, sequence, validate, summary, delete, extended, outputFile, finalListFilter, listAttribute);
+                inputGffFile, sequence, validate, summary, delete, extended, outputFile, finalListFilter);
 
         assertEquals(inputGffFile, optionsProcessor.getInputGffFile());
         assertEquals(sequence, optionsProcessor.getSequence());
@@ -55,6 +55,5 @@ public class OptionsProcessorTest {
         assertEquals(extended, optionsProcessor.isExtended());
         assertEquals(outputFile, optionsProcessor.getOutputFile());
         assertEquals(finalListFilter, optionsProcessor.getListFilter());
-        assertEquals(listAttribute, optionsProcessor.getListAttribute());
     }
 }

@@ -12,8 +12,6 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
 
 import static nl.bioinf.alpruis.FileUtils.fileValidator;
 import static nl.bioinf.alpruis.Main.logger;
@@ -42,33 +40,13 @@ public class CommandLineParser implements Runnable {
     @CommandLine.Option(names = {"-d","--delete"}, description = "Deletes specified feature(s). If not specified, features will be fetched.")
     private boolean delete;
 
-    @CommandLine.Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.") // TODO rethink to use might to be too much work (lvl 2)
-    private boolean extended; // TODO make this work somehow (lvl 3)
-/*
-    // Define query options
-    @CommandLine.Option(names = {"-i", "--id"}, description = "Fetches or deletes features by ID(s). Use a comma-separated list.", split = ",")
-    private List<String> listId;
-
-    @CommandLine.Option(names = {"-t", "--type"}, description = "Fetches or deletes features by type(s). Use a comma-separated list.", split = ",")
-    private List<String> listType;
-
-    @CommandLine.Option(names = {"-r", "--region"}, description = "Fetches or deletes features within the specified regions (start, end). Use a comma-separated list.", split = ",")
-    private List<Integer> listRegion;
-
-    @CommandLine.Option(names = {"-c", "--chromosome"}, description = "Fetches or deletes features by chromosome(s). Use a comma-separated list.", split = ",")
-    private List<String> listChromosomes;
-
-    @CommandLine.Option(names = {"-s", "--source"}, description = "Fetches or deletes features by source(s). Use a comma-separated list.", split = ",")
-    private List<String> listSource;*/
-
-    //TODO there is a way to make it more efficient and the list of options shorter (lvl2)
+    @CommandLine.Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.")
+    private boolean extended; // TODO make this work somehow (lvl 2)
 
     @CommandLine.Option(names = {"-f", "--filter"}, description = "column name = list with things to fetch or delete")
-    private String listFilter;
-
-    @CommandLine.Option(names = {"-a", "--attribute"}, description = "Fetches or deletes features by attribute(s). Use a comma-separated list (e.g., name=LOC,id=15).", split = ",")
-    private List<String> listAttribute;
-
+    private String listFilter; // TODO change the descriptions of all options and parameters to be more clear
+//TODO maybe able to specify filter multiple times
+//TODO add the contains/equals option
     /**
      * Executes the command-line options and performs the corresponding file processing tasks such as validation, feature extraction, or summary generation.
      */
@@ -137,22 +115,19 @@ public class CommandLineParser implements Runnable {
      * Filters features based on command-line options.
      */
     private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change aswell (lvl 2)
+        System.out.println(listFilter);
         StringToMapListConverter converter = new StringToMapListConverter();
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);
-
+        System.out.println(finalListFilter);
         OptionsProcessor options = new OptionsProcessor(inputGffFile, sequence, validate, summary,
-                delete, extended, output_file, finalListFilter, listAttribute);
+                delete, extended, output_file, finalListFilter);
 
-            if (listFilter != null) {
-                //logger.info("Getting ready to parse and filter GFF3 file...");
-                ReturnFile.checkFileDir(output_file);
-                GffProcessor.gffParser(options);
-            } //TODO figure out what to do with Attributes and Extended
-            if (listAttribute != null) {
-                ReturnFile.checkFileDir(output_file);
-                GffProcessor.gffParser(options);
-            }
-//            gffFeatures = delete ? GFFFeatureFunctions.deleteId(gffFeatures, listId) : GFFFeatureFunctions.fetchId(gffFeatures, listId);
+        if (listFilter != null) {
+            //logger.info("Getting ready to parse and filter GFF3 file...");
+            ReturnFile.checkFileDir(output_file);
+            GffProcessor.gffParser(options);
+        }
+        //TODO put the extended option here
 
     }
 }

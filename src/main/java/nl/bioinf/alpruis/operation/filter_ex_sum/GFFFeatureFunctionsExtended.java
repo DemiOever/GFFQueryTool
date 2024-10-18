@@ -12,7 +12,7 @@ import java.util.Map;
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
-public class GFFFeatureFunctionsEXS {
+public class GFFFeatureFunctionsExtended {
     /**
      * Deletes features from the list that match specific attribute key-value pairs.
      *
@@ -20,6 +20,7 @@ public class GFFFeatureFunctionsEXS {
      * @param mapInput Map containing attribute key-value pairs to match for deletion.
      * @return The filtered LinkedList of GFF features.
      */
+    // TODO update the code and make it for the extended option and otherwise a if and else in the other filter file
     public static LinkedList<Feature> deleteAttributes(LinkedList<Feature> gffFeatures_del, Map<String, String> mapInput) {
         Iterator<Feature> iterator = gffFeatures_del.iterator();
 

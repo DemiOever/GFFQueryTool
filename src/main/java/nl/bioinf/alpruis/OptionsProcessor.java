@@ -2,7 +2,7 @@ package nl.bioinf.alpruis;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-
+// TODO Sets making aswell because might need to use when using exit condition and list has to be updated(??)
 public class OptionsProcessor {
 
     private Path inputGffFile;
@@ -13,10 +13,9 @@ public class OptionsProcessor {
     private boolean extended;
     private Path outputFile;
     private Map<String, List<String>> finalListFilter;
-    private List<String> listAttribute;
 
     public OptionsProcessor(Path inputGffFile, Map<String, String> sequence, boolean validate, boolean summary,
-                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter, List<String> listAttribute) {
+                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter) {
         this.inputGffFile = inputGffFile;
         this.sequence = sequence;
         this.validate = validate;
@@ -25,7 +24,6 @@ public class OptionsProcessor {
         this.extended = extended;
         this.outputFile = outputFile;
         this.finalListFilter = finalListFilter;
-        this.listAttribute = listAttribute;
     }
 
     // Getters and setters for each field
@@ -60,9 +58,5 @@ public class OptionsProcessor {
 
     public Map<String, List<String>> getListFilter() {
         return finalListFilter;
-    }
-
-    public List<String> getListAttribute() {
-        return listAttribute;
     }
 }

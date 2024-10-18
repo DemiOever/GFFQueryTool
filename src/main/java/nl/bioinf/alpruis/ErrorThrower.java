@@ -22,4 +22,4 @@ public class ErrorThrower {
         logger.fatal("Something went wrong. Exiting.\n" +
                 "Error information: " + e.getMessage() + ": " + e.getCause());
     }
-}
+} // TODO make the errors better and add more of them

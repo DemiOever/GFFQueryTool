@@ -5,21 +5,21 @@ import nl.bioinf.alpruis.Feature;
 import java.util.*;
 
 import static nl.bioinf.alpruis.Main.logger;
-// TODO logger.warn for when the given list with options includes one that simply doesn't exist (lvl 1)
-// TODO rewrite in a more efficient way for less methods and less code repeating (lvl 2)
 /**
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
 public class GFFFeatureFunctions {
-    private static Map<String, String> parseList(List<String> listInput) {
-        Map<String, String> mapInput = new HashMap<String, String>();
+    private static Map<String, List<String>> parseList(List<String> listInput) {
+        Map<String, List<String>> mapInput = new HashMap<>();
+
         for (String attr : listInput) {
-            String[] keyValue = attr.split("=");
-            if (keyValue.length == 2) {
-                mapInput.put(keyValue[0].trim(), keyValue[1].trim());
-            } else if (keyValue.length >= 3) {
-                logger.error("The attribute ({}) cannot be parsed correctly because there are one or more extra '=' signs.", attr);
+            int equalIndex = attr.indexOf("=");
+            if (equalIndex > 0) {
+                String key = attr.substring(0, equalIndex).trim();
+                String value = attr.substring(equalIndex + 1).trim();
+                List<String> valuesList = Arrays.asList(value.split(","));  // Split the value into a list
+                mapInput.put(key, valuesList);
             } else {
                 logger.error("The attribute ({}) cannot be parsed correctly because there is no '=' sign in the attribute.", attr);
             }
@@ -54,20 +54,15 @@ public class GFFFeatureFunctions {
     }
 
     public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete) {
-        if (column.equals("ID")) {
-            return filterLine(feature.getID(), inputValues, delete);
-        } else if (column.equals("Type")) {
-            return filterLine(feature.getType(), inputValues, delete);
-        } else if (column.equals("Chromosome")) {
-            return filterLine(feature.getChromosome(), inputValues, delete);
-        } else if (column.equals("Region")) {
-            return filterRegion(feature, inputValues, delete);
-        } else if (column.equals("Attributes")) {
-            return filterAttributes(feature, inputValues, delete);
-        } else if (column.equals("Source")) {
-            return filterLine(feature.getSource(), inputValues, delete);
-        }
-        return false;
+        return switch (column) {
+            case "ID" -> filterLine(feature.getID(), inputValues, delete);
+            case "Type" -> filterLine(feature.getType(), inputValues, delete);
+            case "Chromosome" -> filterLine(feature.getChromosome(), inputValues, delete);
+            case "Region" -> filterRegion(feature, inputValues, delete);
+            case "Attributes" -> filterAttributes(feature, inputValues, delete);
+            case "Source" -> filterLine(feature.getSource(), inputValues, delete);
+            default -> false;
+        };
     }
 
     /**
@@ -78,20 +73,31 @@ public class GFFFeatureFunctions {
      * @return The filtered LinkedList of GFF features.
      */
     public static boolean filterAttributes(Feature feature, List<String> listInput, boolean delete) {
-        Map<String, String> mapInput = parseList(listInput);
+        Map<String, List<String>> mapInput = parseList(listInput);  // Parse the input into key -> list of values
         Map<String, String> featureAttributes = feature.getAttributes();
 
-        for (Map.Entry<String, String> entry : mapInput.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
+        for (Map.Entry<String, List<String>> entry : mapInput.entrySet()) {
+            String key = entry.getKey();  // e.g., ID
+            List<String> inputValues = entry.getValue();  // List of values e.g., ["NC_000067.7:1..195154279", "id-GeneID:131295014"]
 
-            // Check if the feature has the attribute and if it matches the provided value
+            // Check if the feature has the attribute and if it matches any of the provided values
             if (featureAttributes.containsKey(key)) {
-                boolean match = featureAttributes.get(key).matches(value);
-                if (delete && match) {
+                String featureValue = featureAttributes.get(key);
+
+                boolean matched = false;
+                for (String value : inputValues) {
+                    if (featureValue.contains(value)) {  // Use contains for partial matching
+                        // TODO make option for contains or equals
+                        matched = true;
+                        break;  // If any value matches, we stop checking further
+                    }
+                }
+
+                // If deleting, return false if there's a match; if fetching, return false if there's no match
+                if (delete && matched) {
                     return false; // Mark for deletion if matches
-                } else if (!delete && !match) {
-                    return false; // Exclude from result if it doesn't match
+                } else if (!delete && !matched) {
+                    return false; // Exclude from result if none of the values match
                 }
             } else if (!delete) {
                 return false; // Exclude from result if attribute doesn't exist and we're fetching
