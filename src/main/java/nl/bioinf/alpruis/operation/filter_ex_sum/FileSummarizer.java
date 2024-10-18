@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis.operations;
+package nl.bioinf.alpruis.operation.filter_ex_sum;
 
 import nl.bioinf.alpruis.Feature;
 import org.apache.logging.log4j.LogManager;

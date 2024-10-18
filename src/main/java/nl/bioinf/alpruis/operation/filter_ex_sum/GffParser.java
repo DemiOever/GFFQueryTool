@@ -1,6 +1,7 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filter_ex_sum;
 
-import static nl.bioinf.alpruis.Main.logger;
+import nl.bioinf.alpruis.ErrorThrower;
+import nl.bioinf.alpruis.Feature;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,13 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static nl.bioinf.alpruis.Main.logger;
+
 /**
  * The GffParser class is responsible for parsing GFF3 files, creating Feature objects,
  * and storing them in a linked list. It processes each line of the GFF3 file, handling
  * features and their parent-child relationships.
  */
 public class GffParser {
-
+// TODO if the list given is used all of them like with ID then stop parsing and if its not empty at the end of parsing then give back with left over
     /**
      * Parses the provided GFF3 file and returns a LinkedList of Feature objects.
      * Each feature is parsed line by line, and parent-child relationships are handled.
@@ -36,7 +39,7 @@ public class GffParser {
                 processLine(line, gffFeatures, map, headers);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ErrorThrower.throwErrorE(e);
         }
         logger.info("done parsing");
         return gffFeatures;
@@ -120,7 +123,7 @@ public class GffParser {
      * @param attrPairs an array of attribute strings, each representing a key-value pair.
      * @return a map of attributes as key-value pairs.
      */
-    static Map<String, String> parseAttributes(String[] attrPairs) {
+    public static Map<String, String> parseAttributes(String[] attrPairs) {
         Map<String, String> attributes = new HashMap<>();
         for (String attr : attrPairs) {
             String[] keyValue = attr.split("=");

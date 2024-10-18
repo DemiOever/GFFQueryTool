@@ -1,6 +1,7 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filter_ex_sum;
 
-import static nl.bioinf.alpruis.Main.logger;
+import nl.bioinf.alpruis.ErrorThrower;
+import nl.bioinf.alpruis.Feature;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,11 +11,14 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static nl.bioinf.alpruis.Main.logger;
+
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
  * The file format is determined based on the file extension, and appropriate methods are used to output the data.
  */
-public class ReturnFile {
+public class ReturnFileExtended {
+    // TODO update the code and make it extended
 
     /**
      * Writes the features to a file in FASTA format.
@@ -43,6 +47,8 @@ public class ReturnFile {
      * @param result The list of features to write.
      */
     private static void returnGff(Path outFile, LinkedList<Feature> result) {
+        System.out.println(outFile);
+        System.out.println(outFile.getParent());
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
             for (Feature feature : result) {
                 writer.write(feature.toGffFormat()); // Writes feature in GFF format
@@ -119,6 +125,7 @@ public class ReturnFile {
             // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
 
             // Create a default path for the output file
+            
             Path defaultOutFile = outputFile.getParent() != null ?
                     outputFile.getParent().resolve("output_GFQueryTool.gff") :
                     Path.of("output_GFQueryTool.gff");
