@@ -136,7 +136,4 @@ public class FileUtils {
 
         return sequence;
     }
-
-    public static class FindingSites {
-    }
 }

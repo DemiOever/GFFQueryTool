@@ -2,6 +2,8 @@ package nl.bioinf.alpruis;
 
 import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class FileUtilsTest {
@@ -76,6 +78,32 @@ class FileUtilsTest {
 
         // Assert the file is valid
         assertFalse(isValid, "The valid FASTA file should be recognized as invalid.");
+    }
+
+    @Test
+    void ValidSequenceMakerTest() {
+        // Valid file path
+        Path validSequenceFile = Path.of("src/test/resources/valid_fasta.fasta");
+
+        // Call sequenceMaker
+        Map<String, String> map= FileUtils.sequenceMaker(validSequenceFile);
+
+        // Assert the file is valid
+        assertNotNull(map, "The map should not be null.");
+        assertFalse(map.isEmpty(), "The map should not be empty.");
+    }
+
+    @Test
+    void InvalidSequenceMakerTest() {
+        // Invalid file path
+        Path invalidSequenceFile = Path.of("src/test/resources/invalid_fasta_header.fasta");
+
+        // Call sequenceMaker
+        Map<String, String> map= FileUtils.sequenceMaker(invalidSequenceFile);
+
+        // Assert the file is invalid
+        assertNotNull(map, "The map should not be null.");
+        assertTrue(map.isEmpty(), "The map should not be empty.");
     }
 
     // Additional test case ideas:
