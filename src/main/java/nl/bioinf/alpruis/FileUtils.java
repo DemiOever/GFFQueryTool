@@ -1,7 +1,6 @@
 package nl.bioinf.alpruis;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,5 +135,8 @@ public class FileUtils {
         }
 
         return sequence;
+    }
+
+    public static class FindingSites {
     }
 }

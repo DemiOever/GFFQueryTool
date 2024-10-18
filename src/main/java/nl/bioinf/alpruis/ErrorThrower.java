@@ -17,4 +17,9 @@ public class ErrorThrower {
         logger.fatal("Something went wrong. Exiting.\n" +
                 "Error information: " + ex.getMessage() + ": " + ex.getCause());
     }
+
+    public static void throwErrorE(Exception e) {
+        logger.fatal("Something went wrong. Exiting.\n" +
+                "Error information: " + e.getMessage() + ": " + e.getCause());
+    }
 }

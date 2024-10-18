@@ -1,6 +1,7 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filter;
 
-import static nl.bioinf.alpruis.Main.logger;
+import nl.bioinf.alpruis.Feature;
+import nl.bioinf.alpruis.OptionsProcessor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,12 +9,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+import static nl.bioinf.alpruis.Main.logger;
+
 /**
  * The GffParser class is responsible for parsing GFF3 files, creating Feature objects,
  * and storing them in a linked list. It processes each line of the GFF3 file, handling
  * features and their parent-child relationships.
  */
-public class GffParser {
+public class GffProcessor {
 
     /**
      * Parses the provided GFF3 file and returns a LinkedList of Feature objects.
@@ -23,23 +26,31 @@ public class GffParser {
      * @param inputGffFile the path to the GFF3 file to be parsed.
      * @return a LinkedList of Feature objects representing the parsed GFF3 data.
      */
-    public static LinkedList<Feature> gffParser(Path inputGffFile) {
-        LinkedList<Feature> gffFeatures = new LinkedList<>();
-        Map<String, Feature> map = new HashMap<>();
+    public static void gffParser(OptionsProcessor options) {
         List<String> headers = new ArrayList<>();
 
-        try (BufferedReader reader = Files.newBufferedReader(inputGffFile)) {
+        try (BufferedReader reader = Files.newBufferedReader(options.getInputGffFile())) {
             String line;
-
-            // Process each line of the GFF3 file
-            while ((line = reader.readLine()) != null) {
-                processLine(line, gffFeatures, map, headers);
+            int count = 0;
+            for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
+                // Process each line of the GFF3 file
+                while ((line = reader.readLine()) != null) {
+                    boolean filter = false;
+                    if (line.startsWith("#")) {
+                        headers.add(line);  // Add header to the list
+                    } else {
+                        Feature feature = parseLine(line);
+                        filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete());
+                        if (filter) {
+                            ReturnFile.chooseTypeFile(feature, options);
+                        } // else keep going
+                    }
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        logger.info("done parsing");
-        return gffFeatures;
+        logger.info("done parsing and writing");
     }
 
     /**
@@ -47,15 +58,10 @@ public class GffParser {
      * and adding it to the linked list. It also handles parent-child relationships between features.
      *
      * @param line the line from the GFF3 file to be processed.
-     * @param gffFeatures the LinkedList that stores all parsed Feature objects.
+     * @param headers the List that stores all parsed Feature objects.
      * @param map a map to store features by their ID for efficient lookup.
      */
-    private static void processLine(String line, LinkedList<Feature> gffFeatures, Map<String, Feature> map, List<String> headers) {
-        if (line.startsWith("#")) {
-            headers.add(line);  // Add header to the list
-            return;
-        }
-
+    private static Feature parseLine(String line) {
         String[] columns = line.split("\t"); // Parse the feature details from the columns
         String seqID = columns[0];
         String source = columns[1];
@@ -69,47 +75,7 @@ public class GffParser {
         Map<String, String> attributes = parseAttributes(attrPairs);
 
         Feature feature = new Feature(seqID, source, type, start, end, score, strand, phase, attributes);
-        gffFeatures.add(feature);
-
-        // Store feature if it has an ID
-        if (feature.getID() != null) {
-            map.put(feature.getID(), feature);
-        }
-
-        // Check if the feature has a Parent attribute
-        String parentID = feature.getParentID();
-        if (parentID != null) {
-            if (map.containsKey(parentID)) {
-                // Parent exists, add this feature as its child
-                map.get(parentID).addChild(feature.getID());
-            }
-        } else {
-            // No explicit parent; check if it belongs to the feature type region based on coordinates
-            linkToRegion(feature, gffFeatures);
-        }
-    }
-
-    /**
-     * Links a feature to a region if the feature is within the boundaries of a region in the GFF file.
-     * This method searches through the GFF features to find a matching region based on coordinates and sequence ID.
-     *
-     * @param feature the feature to be linked to a region.
-     * @param gffFeatures the LinkedList containing all parsed features, including regions.
-     */
-    private static void linkToRegion(Feature feature, LinkedList<Feature> gffFeatures) {
-        // Search for a region that contains this feature
-        for (Feature parentFeature : gffFeatures) {
-            if (parentFeature.getType().equals("region") &&
-                    parentFeature.getSeqId().equals(feature.getSeqId()) &&
-                    parentFeature.getStart() <= feature.getStart() &&
-                    parentFeature.getEnd() >= feature.getEnd() &&
-                    !parentFeature.getID().equals(feature.getID()) &&
-                    feature.getID().startsWith("gene")) {
-                // Link feature to the region as a child
-                parentFeature.addChild(feature.getID());
-                break;
-            }
-        }
+        return feature;
     }
 
     /**

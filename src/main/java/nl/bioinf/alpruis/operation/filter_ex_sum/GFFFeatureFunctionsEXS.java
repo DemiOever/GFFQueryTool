@@ -1,18 +1,18 @@
-package nl.bioinf.alpruis.operations;
+package nl.bioinf.alpruis.operation.filter_ex_sum;
 
 import nl.bioinf.alpruis.Feature;
-import static nl.bioinf.alpruis.Main.logger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 // TODO logger.warn for when the given list with options includes one that simply doesn't exist (lvl 1)
 // TODO rewrite in a more efficient way for less methods and less code repeating (lvl 2)
 /**
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
-public class GFFFeatureFunctions {
+public class GFFFeatureFunctionsEXS {
     /**
      * Deletes features from the list that match specific attribute key-value pairs.
      *

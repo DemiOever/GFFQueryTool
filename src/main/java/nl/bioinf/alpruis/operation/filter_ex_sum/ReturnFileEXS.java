@@ -1,6 +1,7 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filter_ex_sum;
 
-import static nl.bioinf.alpruis.Main.logger;
+import nl.bioinf.alpruis.ErrorThrower;
+import nl.bioinf.alpruis.Feature;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,11 +11,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static nl.bioinf.alpruis.Main.logger;
+
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
  * The file format is determined based on the file extension, and appropriate methods are used to output the data.
  */
-public class ReturnFile {
+public class ReturnFileEXS {
 
     /**
      * Writes the features to a file in FASTA format.
