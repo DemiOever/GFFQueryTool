@@ -64,7 +64,7 @@ public class FileSummarizer {
      * @param sequence a map of sequences from a FASTA file.
      * @return a FeatureSummary object containing various statistics about the features and sequences.
      */
-    public FeatureSummary summarizeFeatures(List<Feature> features, Map<String,String> sequence) {
+    public static FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
         Map<String, Integer> countingSources = new HashMap<>();
 

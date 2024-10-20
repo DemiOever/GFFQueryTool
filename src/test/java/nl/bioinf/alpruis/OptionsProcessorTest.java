@@ -28,8 +28,6 @@ public class OptionsProcessorTest {
         Path inputGffFile = Path.of("src/test/resources/valid_gff.gff");
         sequence = new HashMap<>();
         sequence.put("seq1", "ATCG");
-
-
         boolean validate = true;
         boolean summary = false;
         boolean delete = true;

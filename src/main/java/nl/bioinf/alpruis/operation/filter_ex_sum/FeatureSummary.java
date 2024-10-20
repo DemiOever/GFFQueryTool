@@ -42,6 +42,42 @@ public class FeatureSummary {
         this.reverseStrands = reverseStrands;
     }
 
+    public int getCountGenes() {
+        return countGenes;
+    }
+
+    public long getAvgLengthGenes() {
+        return avgLengthGenes;
+    }
+
+    public int getForwardStrands() {
+        return forwardStrands;
+    }
+
+    public int getReverseStrands() {
+        return reverseStrands;
+    }
+
+    public Long getSeqLength() {
+        return seqLength;
+    }
+
+    public double getPercentageGC() {
+        return percentageGC;
+    }
+
+    public Map<String, Integer> getCountingFeatures() {
+        return countingFeatures;
+    }
+
+    public Map<String, Integer> getCountingSources() {
+        return countingSources;
+    }
+
+    public List<String> getRegions() {
+        return regions;
+    }
+
     /**
      * Returns a string representation of the FeatureSummary, summarizing key statistics.
      *
