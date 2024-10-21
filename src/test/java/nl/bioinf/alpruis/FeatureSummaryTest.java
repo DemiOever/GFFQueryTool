@@ -10,22 +10,22 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FeatureSummaryTest {
 
-        private Long seqLength;
-        private double percentageGC;
-        private Map<String, Integer> countingFeatures;
-        private Map<String, Integer> countingSources;
-        private List<String> regions;
-        private int countGenes;
-        private long avgLengthGenes;
-        private int forwardStrands;
-        private int reverseStrands;
+    private Long seqLength;
+    private double percentageGC;
+    private Map<String, Integer> countingFeatures;
+    private Map<String, Integer> countingSources;
+    private List<String> regions;
+    private int countGenes;
+    private long avgLengthGenes;
+    private int forwardStrands;
+    private int reverseStrands;
 
     private FeatureSummary featureSummary;
 
     @BeforeEach
     void setUp() {
         Long seqLength = 1000L;
-        Long percentageGC = 50L;
+        int percentageGC = 50;
         Map<String, Integer> countingFeatures = new HashMap<>();
         countingFeatures.put("exon", 20);
         countingFeatures.put("intron", 10);

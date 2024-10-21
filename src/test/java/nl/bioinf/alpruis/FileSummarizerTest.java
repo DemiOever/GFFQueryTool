@@ -78,7 +78,6 @@ public class FileSummarizerTest {
         sequences.put(">seq1", "ATGCATGC");
         sequences.put(">seq2", "GCGCGCGC");
         features = new ArrayList<>();
-        Map<String, String> featureAttributes = new HashMap<>();
 
         // Set testdata
         features.add(new Feature("NC_000067.7", "RefSeq", "region", 1, 195154279, ".", "+", ".",
@@ -118,7 +117,8 @@ public class FileSummarizerTest {
     @Test
     public void testSummarizeFeatures() {
         // Call the summarizeFeatures method
-        FeatureSummary summary = FileSummarizer.summarizeFeatures(features, sequences);
+        FileSummarizer summarizer = new FileSummarizer();
+        FeatureSummary summary = summarizer.summarizeFeatures(features, sequences);
 
         // Updated expected feature counts based on the features provided
         Map<String, Integer> expectedFeatureCounts = new HashMap<>();

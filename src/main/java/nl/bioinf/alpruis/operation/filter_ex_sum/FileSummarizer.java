@@ -64,7 +64,7 @@ public class FileSummarizer {
      * @param sequence a map of sequences from a FASTA file.
      * @return a FeatureSummary object containing various statistics about the features and sequences.
      */
-    public static FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
+    public FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
         Map<String, Integer> countingSources = new HashMap<>();
 
@@ -88,14 +88,11 @@ public class FileSummarizer {
             }
 
             String strand = feature.getStrand();
-            if (Objects.equals(strand, "+")) {
-                forwardStrands++;
-            } else if (Objects.equals(strand, "-")) {
-                reverseStrands++;
-            } else if (Objects.equals(strand, ".")) {
-                unknownStrands++;
-            }else {
-                logger.error("Unknown stand direction: " + strand);
+            switch (strand) {
+                case "+" -> forwardStrands++;
+                case "-" -> reverseStrands++;
+                case "." -> unknownStrands++;
+                case null, default -> logger.error("Unknown stand direction: " + strand);
             }
 
             if (Objects.equals(feature.getType(), "region")) {
