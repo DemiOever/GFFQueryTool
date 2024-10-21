@@ -25,13 +25,8 @@ At the moment only able to run in a linux based commandline.
 The GFF Query Tool supports various options for querying GFF3 and FASTA files. The syntax for using the tool is as follows:
 
 ```
-java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>] 
-                           [-a=<listAttribute>[,<listAttribute>...]] 
-                           [-c=<listChromosomes>[,<listChromosomes>...]] 
-                           [-i=<listId>[,<listId>...]] 
-                           [-r=<listRegion>[,<listRegion>...]] 
-                           [-s=<listSource>[,<listSource>...]] 
-                           [-t=<listType>[,<listType>...]] 
+java -jar GFFQueryTool.jar [-dehVs] [-vf] [-o=<output_file>] 
+                           [-f=<filter>[,listFilter]] 
                            <inputGffFile> <inputFastaFile>
 ```
 
@@ -40,21 +35,16 @@ java -jar GFFQueryTool.jar [-dehV] [-sum] [-vf] [-o=<output_file>]
 
 ### Command Options
 
-| Option | Description                                                                                                                                                                                            |
-|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **-a, --attribute** | Returns features with specified attributes chosen by user. Example: `-a name=LOC,id=15`                                                                                                                |
-| **-c, --chromosome** | Fetch/delete features in chosen chromosome(s) by user. Example: `-c 1,2`                                                                                                                               |
-| **-d, --delete** | Deletes specified feature(s) used in combination with other options and if not used then it fetches. Must be combined with `--id`, `--type`, `--source`, `--chromosome`, `--region`, or `--attribute`. |
-| **-e, --extended** | Includes parent and child features in the result. Default is `false`.                                                                                                                                  |
-| **-h, --help** | Displays help information.                                                                                                                                                                             |
-| **-i, --id** | Fetch/delete features by feature IDs. Example: `-i ID12345,ID67890`                                                                                                                                    |
-| **-o, --output_file** | Specifies the output file path. Example: `-o output.fasta`                                                                                                                                             |
-| **-r, --region** | Fetches/deletes features within specified regions. Example: `-r 1,200,300,400`                                                                                                                         |
-| **-s, --source** | Fetches/deletes features by source(s). Example: `-s refSeq,cDNA_match`                                                                                                                                 |
-| **-sum, --summary** | Generates a textual summary of the GFF and FASTA files, including sequence length, GC content, feature counts, and more.                                                                               |
-| **-t, --type** | Fetches/deletes features by type. Example: `-t mRNA,gene`                                                                                                                                                      |
-| **-V, --version** | Displays the tool's version information.                                                                                                                                                               |
-| **-vf, --validate** | Validates the input GFF and FASTA files for correct format.                                                                                                                                            |
+| Option                | Description                                                                                                                                                                                                                                                                                         |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **-d, --delete**      | Deletes specified feature(s) used in combination with other options and if not used then it fetches. Must be combined with `--filter`.                                                                                                                                                              |
+| **-e, --extended**    | Includes parent and child features in the result. Default is `false`.                                                                                                                                                                                                                               |
+| **-h, --help**        | Displays help information.                                                                                                                                                                                                                                                                          |
+| **-o, --output_file** | Specifies the output file path. You can chose one of the following 4 extensions: .fasta, .gff, .txt, .csv. Example: `-o output.fasta`                                                                                                                                                               |
+| **-s, --summary**     | Generates a textual summary of the GFF and FASTA files, including length of the sequence, gc-percentage, feature types with the amount present, different sources and amount present, amount of genes, average length of genes, amount of forward and reverse strands and names of all the regions. |
+| **-f, --filter**      | Filters the file on given input. The filters work per column: [ID, Type, Chromosome, Region, Attributes, Source] Example: `ID==123,456`.                                                                                                                                                            |
+| **-V, --version**     | Displays the tool's version information.                                                                                                                                                                                                                                                            |
+| **-vf, --validate**   | Validates the input GFF and FASTA files for correct format.                                                                                                                                                                                                                                         |
 
 
 ### Data
@@ -67,22 +57,24 @@ version of the Mus Muscullus organism commonly known as house mouse.
 
 1. **Fetch Features by Attribute:**
    ```
-   java -jar GFFQueryTool.jar -a name=LOC,id=15 input.gff input.fasta -o output.gff
+   java -jar gffquerytool-1.0-SNAPSHOT.jar -f Attributes==name=LOC input.gff input.fasta -o output.gff
    ```
-
+input.gff needs to be replaced by your own gff3 file<br>
+input.fasta needs to be replaced by your own fasta file<br>
+output.gff needs to be replaced by your path to your output file
 2. **Fetch Sequences by Chromosome:**
    ```
-   java -jar GFFQueryTool.jar -c 1,2 input.gff input.fasta -o output.csv
+   java -jar gffquerytool-1.0-SNAPSHOT.jar -f Chromosome==NC_000067.7,NC_000070.7 input.gff input.fasta -o output.csv
    ```
 
 3. **Delete Features by ID:**
    ```
-   java -jar GFFQueryTool.jar -d -i ID12345 input.gff input.fasta -o output.txt
+   java -jar gffquerytool-1.0-SNAPSHOT.jar -d -f ID==ID12345 input.gff input.fasta -o output.txt
    ```
 
 4. **Generate a Summary:**
    ```
-   java -jar GFFQueryTool.jar -sum input.gff input.fasta
+   java -jar gffquerytool-1.0-SNAPSHOT.jar -s input.gff input.fasta
    ```
 ---
 
@@ -114,12 +106,9 @@ Feature{seqID='NC_000067.7', source='RefSeqFE', type='biological_region', start=
 ---
 
 ## Ongoing processes
-* Implement the more effective way for the functions, that we have in mind.
 * Use the extended option to include Children 
 * Writing in fasta format to a fasta file when chosen
-* Save the headers when parsing for writing away to GFF3 format
-* Rethink of rewrite the options in the commandline to be easier to use and more clear
-* Look at classes and/of methods that are time-consuming and implement a better way to do that task. At the moment we are working on filtering during parsing the gff file because it is the task that takes the longest.
+* Look at classes and/of methods that are time-consuming and implement a better way to do that task. 
 * Making all the tests for the methods/classes
 * If no outfile has been given or an invalid one then it should be written to a default gff file.
 
