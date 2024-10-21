@@ -30,19 +30,25 @@ public class GffProcessor {
      * @param options the path   to the GFF3 file to be parsed.
      */
     public static void gffParser(OptionsProcessor options) {
-        List<String> headers = new ArrayList<>();
-
         try (BufferedReader reader = Files.newBufferedReader(options.getInputGffFile())) {
             String line;
+            if (options.getOutputFile().endsWith(".csv")){
+                ReturnFile.writeHeader("ID,Source,Type,Start,End,Score,Strand,Phase,Attributes", options); // Writes CSV header
+            }
+
             for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
                 // Process each line of the GFF3 file
                 while ((line = reader.readLine()) != null) {
                     boolean filter;
+
                     if (line.startsWith("#")) {
-                        headers.add(line);  // Add header to the list
+                        if(options.getOutputFile().endsWith(".gff") || options.getOutputFile().endsWith(".txt")) {
+                            ReturnFile.writeHeader(line, options);  // Add header to the list
+                        }
                     } else {
                         Feature feature = parseLine(line);
                         filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete());
+
                         if (filter) {
                             ReturnFile.chooseTypeFile(feature, options);
                         } // else keep going

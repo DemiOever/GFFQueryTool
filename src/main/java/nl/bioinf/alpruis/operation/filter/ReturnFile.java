@@ -63,7 +63,6 @@ public class ReturnFile {
          */
         private static void returnCsv(Path outFile, Feature feature) {
             try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.write("ID,Source,Type,Start,End,Score,Strand,Phase,Attributes"); // Writes CSV header
                 writer.newLine();
                 writer.write(feature.toCsvFormat()); // Writes feature in CSV format
                 writer.newLine();
@@ -117,6 +116,16 @@ public class ReturnFile {
                 Files.delete(outputFile); // Overwrite if file exists
             }
             Files.createFile(outputFile);
+        } catch (IOException ex) {
+            ErrorThrower.throwError(ex);
+        }
+    }
+
+    public static void writeHeader(String line, OptionsProcessor options) {
+            Path outFile = options.getOutputFile();
+        try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            writer.write(line);
+            writer.newLine();
         } catch (IOException ex) {
             ErrorThrower.throwError(ex);
         }

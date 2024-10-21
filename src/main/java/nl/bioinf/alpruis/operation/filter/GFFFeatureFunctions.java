@@ -57,9 +57,9 @@ public class GFFFeatureFunctions {
         return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, delete);
             case "Type" -> filterLine(feature.getType(), inputValues, delete);
-            case "Chromosome" -> filterLine(feature.getChromosome(), inputValues, delete);
+            case "Chromosome" -> filterChromosome(feature.getSeqId(), inputValues, delete);
             case "Region" -> filterRegion(feature, inputValues, delete);
-            case "Attributes" -> filterAttributes(feature, inputValues, delete);
+            case "Attributes" -> filterAttributes(feature.getAttributes(), inputValues, delete);
             case "Source" -> filterLine(feature.getSource(), inputValues, delete);
             default -> false;
         };
@@ -68,13 +68,12 @@ public class GFFFeatureFunctions {
     /**
      * Deletes features from the list that match specific attribute key-value pairs.
      *
-     * @param feature  LinkedList of GFF features to be filtered.
+     * @param featureAttributes  LinkedList of GFF features to be filtered.
      * @param listInput Map containing attribute key-value pairs to match for deletion.
      * @return The filtered LinkedList of GFF features.
      */
-    public static boolean filterAttributes(Feature feature, List<String> listInput, boolean delete) {
+    public static boolean filterAttributes(Map<String, String> featureAttributes, List<String> listInput, boolean delete) {
         Map<String, List<String>> mapInput = parseList(listInput);  // Parse the input into key -> list of values
-        Map<String, String> featureAttributes = feature.getAttributes();
 
         for (Map.Entry<String, List<String>> entry : mapInput.entrySet()) {
             String key = entry.getKey();  // e.g., ID
@@ -104,5 +103,13 @@ public class GFFFeatureFunctions {
             }
         }
         return true; // Feature passes the filter
+    }
+
+    private static boolean filterChromosome(String chromosome, List<String> listInput, boolean delete) {
+        // Check if the feature's chromosome matches any in the input list
+        boolean matches = listInput.contains(chromosome);
+
+        // Return based on whether delete is true or false
+        return delete ? !matches : matches;
     }
 }
