@@ -72,14 +72,8 @@ public class CommandLineParser implements Runnable {
 
         if (gffValid && fastaValid) {
             logger.info("Both files are valid.");
-        } else if (!gffValid) {
-            logger.fatal("Invalid GFF3 file.");
-            System.exit(1);
-        } else if (!fastaValid) {
-            logger.fatal("Invalid FASTA file.");
-            System.exit(1);
         } else {
-            logger.info("Both files are invalid.");
+            logger.info("Both or one of the files are invalid.");
             System.exit(1);
         }
     }
@@ -114,7 +108,7 @@ public class CommandLineParser implements Runnable {
     /**
      * Filters features based on command-line options.
      */
-    private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change aswell (lvl 2)
+    private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change as well (lvl 2)
         System.out.println(listFilter);
         StringToMapListConverter converter = new StringToMapListConverter();
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);

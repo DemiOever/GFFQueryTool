@@ -9,64 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//public class FileSummarizerTest {
-//
-//    @Test
-//    void averageLengthTest() {
-//        Map<String, String> sequence = new HashMap<>();
-//        sequence.put("first", "AGCTGGCTGA");
-//
-//        // Call method
-//        Long actualAverage = FileSummarizer.averageLength(sequence);
-//
-//        // Expected
-//        Long expectedAverage = 10L;
-//
-//        // Assert
-//        assertEquals(expectedAverage, actualAverage);
-//    }
-//
-//    @Test
-//    void gettingGcPercentageTest() {
-//        Map<String, String> seq = new HashMap<>();
-//        seq.put("chr1", "AGCTGGCTGA");
-//
-//        // Call method
-//        double actualPercentage = FileSummarizer.gettingGcPercentage(seq);
-//
-//        // Expected
-//        double expectedPercentage = 60.0;
-//
-//        assertEquals(expectedPercentage, actualPercentage);
-//    }
-//
-//    @Test
-//    void summarizeFeaturesTest() {
-//        // New ArrayList
-//        List<Feature> features = new ArrayList<>();
-//        Map<String, String> sequence = new HashMap<>();
-//
-//        // New Map for attributes and add attributes to featureAttributes
-//        Map<String, String> featureAttributes = new HashMap<>();
-//        featureAttributes.put("ID", "Chromosome");
-//
-//        // Put some items in features and sequence
-//        features.add(new Feature(
-//                "gene", "source1", "chr1", 100, 200, ".", "+", "1", featureAttributes));
-//        sequence.put("chr1", "AGCTGGCTGA");
-//
-//        // Call summarizeFeature
-//        FeatureSummary result = FileSummarizer.summarizeFeatures(features, sequence);
-//
-//        // Assert
-//        assertEquals(0, result.getCountGenes());
-//        assertEquals(0, result.getAvgLengthGenes());
-//        assertEquals(1, result.getForwardStrands());
-//        assertEquals(0, result.getReverseStrands());
-//        //assertTrue(result.getRegions().contains("chr1"));
-//    }
-//}
-
 public class FileSummarizerTest {
 
     private Map<String, String> sequences;

@@ -71,7 +71,7 @@ public class GFFFeatureFunctionsExtended {
     }
 
     /**
-     * Deletes features from the list that fall outside of the specified regions.
+     * Deletes features from the list that fall outside the specified regions.
      *
      * @param gffFeatures_del LinkedList of GFF features to be filtered.
      * @param listInput List of start and end positions defining the regions.

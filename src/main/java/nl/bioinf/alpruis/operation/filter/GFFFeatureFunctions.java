@@ -110,6 +110,6 @@ public class GFFFeatureFunctions {
         boolean matches = listInput.contains(chromosome);
 
         // Return based on whether delete is true or false
-        return delete ? !matches : matches;
+        return delete != matches;
     }
 }

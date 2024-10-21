@@ -54,9 +54,8 @@ public class FileUtils {
      *
      * @param br the BufferedReader for reading the GFF3 file.
      * @return true if the file content is valid, false otherwise.
-     * @throws IOException if an I/O error occurs while reading the file.
      */
-    private static boolean contentGFFValid(BufferedReader br) throws IOException {
+    private static boolean contentGFFValid(BufferedReader br) {
         boolean isValid = true;
         try {
             for (int i = 0; i <= 100; i++) {

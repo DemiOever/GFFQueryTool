@@ -8,8 +8,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.util.HashMap;
-
 /**
  * Utility class to provide summary statistics for biological sequence files and GFF3 features.
  * This class summarizes sequences and features such as gene counts, strand directions, and GC content.
@@ -92,7 +90,6 @@ public class FileSummarizer {
                 case "+" -> forwardStrands++;
                 case "-" -> reverseStrands++;
                 case "." -> unknownStrands++;
-                case null, default -> logger.error("Unknown stand direction: " + strand);
             }
 
             if (Objects.equals(feature.getType(), "region")) {
