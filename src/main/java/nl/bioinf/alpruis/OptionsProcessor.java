@@ -13,9 +13,10 @@ public class OptionsProcessor {
     private final boolean extended;
     private final Path outputFile;
     private final Map<String, List<String>> finalListFilter;
+    private final boolean useContains;
 
     public OptionsProcessor(Path inputGffFile, Map<String, String> sequence, boolean validate, boolean summary,
-                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter) {
+                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter, boolean useContains) {
         this.inputGffFile = inputGffFile;
         this.sequence = sequence;
         this.validate = validate;
@@ -24,6 +25,7 @@ public class OptionsProcessor {
         this.extended = extended;
         this.outputFile = outputFile;
         this.finalListFilter = finalListFilter;
+        this.useContains = useContains;
     }
 
     // Getters and setters for each field
@@ -59,4 +61,6 @@ public class OptionsProcessor {
     public Map<String, List<String>> getListFilter() {
         return finalListFilter;
     }
+
+    public boolean getContains() {return useContains;}
 }

@@ -53,13 +53,13 @@ public class GFFFeatureFunctions {
         return true;
     }
 
-    public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete) {
+    public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete, boolean useContains) {
         return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, delete);
             case "Type" -> filterLine(feature.getType(), inputValues, delete);
             case "Chromosome" -> filterChromosome(feature.getSeqId(), inputValues, delete);
             case "Region" -> filterRegion(feature, inputValues, delete);
-            case "Attributes" -> filterAttributes(feature.getAttributes(), inputValues, delete);
+            case "Attributes" -> filterAttributes(feature.getAttributes(), inputValues, delete, useContains);
             case "Source" -> filterLine(feature.getSource(), inputValues, delete);
             default -> false;
         };
@@ -72,8 +72,9 @@ public class GFFFeatureFunctions {
      * @param listInput Map containing attribute key-value pairs to match for deletion.
      * @return The filtered LinkedList of GFF features.
      */
-    public static boolean filterAttributes(Map<String, String> featureAttributes, List<String> listInput, boolean delete) {
+    public static boolean filterAttributes(Map<String, String> featureAttributes, List<String> listInput, boolean delete, boolean useContains) {
         Map<String, List<String>> mapInput = parseList(listInput);  // Parse the input into key -> list of values
+        boolean foundMatch = false;  // Track if we found any match across all entries
 
         for (Map.Entry<String, List<String>> entry : mapInput.entrySet()) {
             String key = entry.getKey();  // e.g., ID
@@ -83,27 +84,27 @@ public class GFFFeatureFunctions {
             if (featureAttributes.containsKey(key)) {
                 String featureValue = featureAttributes.get(key);
 
-                boolean matched = false;
+                // Check if this feature's value matches any of the input values
                 for (String value : inputValues) {
-                    if (featureValue.contains(value)) {  // Use contains for partial matching
-                        // TODO make option for contains or equals
-                        matched = true;
-                        break;  // If any value matches, we stop checking further
+                    if (useContains ? featureValue.contains(value) : featureValue.equals(value)) {  // Use contains or equals based on flag
+                        foundMatch = true;  // A match is found, but we don't exit yet
+                        break;  // Exit inner loop if one match for this key-value pair is found
                     }
                 }
-
-                // If deleting, return false if there's a match; if fetching, return false if there's no match
-                if (delete && matched) {
-                    return false; // Mark for deletion if matches
-                } else if (!delete && !matched) {
-                    return false; // Exclude from result if none of the values match
-                }
-            } else if (!delete) {
-                return false; // Exclude from result if attribute doesn't exist and we're fetching
             }
         }
-        return true; // Feature passes the filter
+
+        // Now decide based on whether we're deleting or fetching
+        if (delete) {
+            // If deleting: return false if any match is found (i.e., we want to delete matched items)
+            return !foundMatch;  // Invert the match flag for deletion
+        } else {
+            // If fetching: return true only if any match is found (i.e., we want to keep matched items)
+            return foundMatch;
+        }
     }
+
+
 
     private static boolean filterChromosome(String chromosome, List<String> listInput, boolean delete) {
         // Check if the feature's chromosome matches any in the input list
