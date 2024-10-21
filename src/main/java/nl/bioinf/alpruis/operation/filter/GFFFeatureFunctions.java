@@ -36,21 +36,15 @@ public class GFFFeatureFunctions {
     }
 
     public static boolean filterRegion(Feature feature, List<String> listInput, boolean delete) {
+
         for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = Integer.parseInt(listInput.get(i));
             int regionEnd = Integer.parseInt(listInput.get(i + 1));
-
-            if (delete) {
-                if (feature.getStart() <= regionStart && feature.getEnd() >= regionEnd) {
-                    return false;
-                }
-            } else {
-                if (feature.getStart() < regionStart || feature.getEnd() > regionEnd) {
-                    return false;
-                }
+            if (regionStart < feature.getStart() && regionEnd > feature.getEnd()) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete, boolean useContains) {
@@ -86,7 +80,7 @@ public class GFFFeatureFunctions {
 
                 // Check if this feature's value matches any of the input values
                 for (String value : inputValues) {
-                    if (useContains ? featureValue.contains(value) : featureValue.equals(value)) {  // Use contains or equals based on flag
+                    if (useContains ? featureValue.contains(value) : featureValue.equals(value)) {
                         foundMatch = true;  // A match is found, but we don't exit yet
                         break;  // Exit inner loop if one match for this key-value pair is found
                     }
