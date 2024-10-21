@@ -36,15 +36,14 @@ public class GFFFeatureFunctions {
     }
 
     public static boolean filterRegion(Feature feature, List<String> listInput, boolean delete) {
-
         for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = Integer.parseInt(listInput.get(i));
             int regionEnd = Integer.parseInt(listInput.get(i + 1));
             if (regionStart < feature.getStart() && regionEnd > feature.getEnd()) {
-                return true;
+                return !delete;
             }
         }
-        return false;
+        return delete;
     }
 
     public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete, boolean useContains) {
