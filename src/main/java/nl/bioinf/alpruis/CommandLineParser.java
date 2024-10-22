@@ -45,6 +45,9 @@ public class CommandLineParser implements Runnable {
 
     @CommandLine.Option(names = {"-f", "--filter"}, description = "column name(ID, Chromosome, Type, Source, Region, Attributes) == list with things seperated by a comma to fetch or delete. Example: Type==gene,exon")
     private String listFilter;
+
+    @CommandLine.Option(names = {"-c","--contains"}, description = "If used it uses regex instead of equals")
+    private boolean contains;
 //TODO maybe able to specify filter multiple times
 //TODO add the contains/equals option
     /**
@@ -114,7 +117,7 @@ public class CommandLineParser implements Runnable {
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);
         System.out.println(finalListFilter);
         OptionsProcessor options = new OptionsProcessor(inputGffFile, sequence, validate, summary,
-                delete, extended, output_file, finalListFilter);
+                delete, extended, output_file, finalListFilter, contains);
 
         if (listFilter != null) {
             //logger.info("Getting ready to parse and filter GFF3 file...");

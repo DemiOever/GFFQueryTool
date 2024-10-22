@@ -8,7 +8,6 @@ import nl.bioinf.alpruis.operation.filter_ex_sum.GffParser;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 import static nl.bioinf.alpruis.Main.logger;
@@ -32,9 +31,6 @@ public class GffProcessor {
     public static void gffParser(OptionsProcessor options) {
         try (BufferedReader reader = Files.newBufferedReader(options.getInputGffFile())) {
             String line;
-            if (options.getOutputFile().endsWith(".csv")){
-                ReturnFile.writeHeader("ID,Source,Type,Start,End,Score,Strand,Phase,Attributes", options); // Writes CSV header
-            }
 
             for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
                 // Process each line of the GFF3 file
@@ -42,12 +38,10 @@ public class GffProcessor {
                     boolean filter;
 
                     if (line.startsWith("#")) {
-                        if(options.getOutputFile().endsWith(".gff") || options.getOutputFile().endsWith(".txt")) {
-                            ReturnFile.writeHeader(line, options);  // Add header to the list
-                        }
+                        ReturnFile.writeHeader(line, options);  // Add header to the list
                     } else {
                         Feature feature = parseLine(line);
-                        filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete());
+                        filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete(), options.getContains());
 
                         if (filter) {
                             ReturnFile.chooseTypeFile(feature, options);

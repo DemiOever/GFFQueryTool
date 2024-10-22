@@ -21,6 +21,7 @@ public class OptionsProcessorTest {
     private Path outputFile;
     private Map<String, List<String>> finalListFilter;
     private List<String> listAttribute;
+    private boolean contains;
 
     @BeforeEach
     void setUp() {
@@ -33,6 +34,7 @@ public class OptionsProcessorTest {
         boolean delete = true;
         boolean extended = false;
         Path outputFile = Path.of("output.txt");
+        boolean contains = false;
 
         finalListFilter = new HashMap<>();
         finalListFilter.put("filter1", Arrays.asList("value1", "value2"));
@@ -43,7 +45,7 @@ public class OptionsProcessorTest {
     @Test
     void optionsProcessorTest() {
         OptionsProcessor optionsProcessor = new OptionsProcessor(
-                inputGffFile, sequence, validate, summary, delete, extended, outputFile, finalListFilter);
+                inputGffFile, sequence, validate, summary, delete, extended, outputFile, finalListFilter, contains);
 
         assertEquals(inputGffFile, optionsProcessor.getInputGffFile());
         assertEquals(sequence, optionsProcessor.getSequence());
@@ -53,5 +55,6 @@ public class OptionsProcessorTest {
         assertEquals(extended, optionsProcessor.isExtended());
         assertEquals(outputFile, optionsProcessor.getOutputFile());
         assertEquals(finalListFilter, optionsProcessor.getListFilter());
+        assertEquals(contains, optionsProcessor.getContains());
     }
 }
