@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import java.util.*;
 

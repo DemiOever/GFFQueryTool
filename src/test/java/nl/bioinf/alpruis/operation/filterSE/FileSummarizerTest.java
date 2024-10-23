@@ -1,7 +1,8 @@
-package nl.bioinf.alpruis;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import java.util.*;
 
+import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.operation.filter_ex_sum.FeatureSummary;
 import nl.bioinf.alpruis.operation.filter_ex_sum.FileSummarizer;
 import org.junit.jupiter.api.Test;

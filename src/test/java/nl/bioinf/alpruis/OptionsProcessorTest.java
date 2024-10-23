@@ -1,14 +1,15 @@
 package nl.bioinf.alpruis;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class OptionsProcessorTest {
 
