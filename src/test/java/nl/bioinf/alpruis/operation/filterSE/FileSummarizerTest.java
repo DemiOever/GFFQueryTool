@@ -23,7 +23,7 @@ public class FileSummarizerTest {
         features = new ArrayList<>();
 
         // Set testdata
-        features.add(new Feature("NC_000067.7", "RefSeq", "region", 1, 195154279, ".", "+", ".",
+        features.add(new Feature("NC_000067.7", "RefSeq", "region", 1, 195154279, ".", ".", ".",
                 Map.of("strain", "C57BL/6J", "genome", "chromosome", "chromosome", "1",
                         "ID", "NC_000067.7:1..195154279", "gbkey", "Src",
                         "Dbxref", "taxon:10090", "Name", "1", "mol_type", "genomic DNA")));
@@ -82,7 +82,7 @@ public class FileSummarizerTest {
         // Assert statements to verify the feature summary results
         assertEquals(2, summary.getCountGenes());
         assertEquals(235943, summary.getAvgLengthGenes());
-        assertEquals(3, summary.getForwardStrands());
+        assertEquals(2, summary.getForwardStrands());
         assertEquals(3, summary.getReverseStrands());
         assertEquals(List.of("1"), summary.getRegions());
         assertEquals(expectedFeatureCounts, summary.getCountingFeatures());
