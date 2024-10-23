@@ -3,9 +3,7 @@ package nl.bioinf.alpruis;
 import nl.bioinf.alpruis.operation.filter.GffProcessor;
 import nl.bioinf.alpruis.operation.filter.ReturnFile;
 import nl.bioinf.alpruis.operation.filter.StringToMapListConverter;
-import nl.bioinf.alpruis.operation.filter_ex_sum.FeatureSummary;
-import nl.bioinf.alpruis.operation.filter_ex_sum.FileSummarizer;
-import nl.bioinf.alpruis.operation.filter_ex_sum.GffParser;
+import nl.bioinf.alpruis.operation.filter_ex_sum.*;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
@@ -123,6 +121,15 @@ public class CommandLineParser implements Runnable {
             //logger.info("Getting ready to parse and filter GFF3 file...");
             ReturnFile.checkFileDir(output_file);
             GffProcessor.gffParser(options);
+        } else if (extended && delete) {
+            logger.error("not allowed");
+        } else if (extended) {
+            ReturnFile.checkFileDir(output_file);
+            LinkedList<Feature> listFeatures = GffParser.gffParser(options.getInputGffFile());
+            LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
+            ReturnFileExtended(listFilterEFeatures, headers);
+        }else {
+            logger.error("Didn't give up any filtering or anything other.");
         }
         //TODO put the extended option here
 
