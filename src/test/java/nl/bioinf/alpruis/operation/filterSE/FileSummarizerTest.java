@@ -84,7 +84,7 @@ public class FileSummarizerTest {
         assertEquals(235943, summary.getAvgLengthGenes());
         assertEquals(2, summary.getForwardStrands());
         assertEquals(3, summary.getReverseStrands());
-        assertEquals(List.of("1"), summary.getRegions());
+        assertEquals(List.of("NC_000067.7"), summary.getRegions());
         assertEquals(expectedFeatureCounts, summary.getCountingFeatures());
         assertEquals(expectedSourceCounts, summary.getCountingSources());
         assertEquals(8, summary.getSeqLength());
