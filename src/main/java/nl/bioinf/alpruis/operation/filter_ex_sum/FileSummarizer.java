@@ -93,7 +93,7 @@ public class FileSummarizer {
             }
 
             if (Objects.equals(feature.getType(), "region")) {
-                regions.add(feature.getChromosome());
+                regions.add(feature.getSeqId());
             }
         }
         logger.warn("In the strand column are {} found as empty.", unknownStrands); //TODO research and change if possible to catch this
