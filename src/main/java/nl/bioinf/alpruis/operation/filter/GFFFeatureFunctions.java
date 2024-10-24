@@ -1,15 +1,19 @@
 package nl.bioinf.alpruis.operation.filter;
 
 import nl.bioinf.alpruis.Feature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-import static nl.bioinf.alpruis.Main.logger;
 /**
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
 public class GFFFeatureFunctions {
+    private static final Logger logger = LogManager.getLogger(GFFFeatureFunctions.class.getName());
+
+
     private static Map<String, List<String>> parseList(List<String> listInput) {
         Map<String, List<String>> mapInput = new HashMap<>();
 
@@ -76,6 +80,7 @@ public class GFFFeatureFunctions {
 
 
     public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete, boolean useContains) {
+        // ID=
         return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, delete, useContains);
             case "TYPE" -> filterLine(feature.getType(), inputValues, delete, useContains);

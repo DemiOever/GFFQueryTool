@@ -1,5 +1,8 @@
 package nl.bioinf.alpruis;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static nl.bioinf.alpruis.ErrorThrower.throwError;
-import static nl.bioinf.alpruis.Main.logger;
 
 /**
  * Utility class providing functions for validating and processing files, specifically GFF3 and FASTA files.
  */
 public class FileUtils {
+    public static final Logger logger = LogManager.getLogger(FileUtils.class.getName());
 
     /**
      * Validates a GFF3 or FASTA file based on its extension and content.

@@ -2,6 +2,8 @@ package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,14 +11,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static nl.bioinf.alpruis.Main.logger;
-
 /**
  * The GffParser class is responsible for parsing GFF3 files, creating Feature objects,
  * and storing them in a linked list. It processes each line of the GFF3 file, handling
  * features and their parent-child relationships.
  */
 public class GffParser {
+    private static final Logger logger = LogManager.getLogger(GffParser.class);
 // TODO if the list given is used all of them like with ID then stop parsing and if its not empty at the end of parsing then give back with left over
     /**
      * Parses the provided GFF3 file and returns a LinkedList of Feature objects.

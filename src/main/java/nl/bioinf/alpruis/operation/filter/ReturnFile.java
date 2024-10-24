@@ -3,6 +3,8 @@ package nl.bioinf.alpruis.operation.filter;
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.OptionsProcessor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,15 +13,13 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import static nl.bioinf.alpruis.Main.logger;
-
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
  * The file format is determined based on the file extension, and appropriate methods are used to output the data.
  */
 
 public class ReturnFile {
-
+        private static final Logger logger = LogManager.getLogger(ReturnFile.class);
         /**
          * Writes a single feature to a file in FASTA format.
          */

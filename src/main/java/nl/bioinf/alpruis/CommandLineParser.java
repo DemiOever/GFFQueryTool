@@ -10,14 +10,15 @@ import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static nl.bioinf.alpruis.FileUtils.fileValidator;
-import static nl.bioinf.alpruis.Main.logger;
 
 @CommandLine.Command(name = "GffCommandLine", mixinStandardHelpOptions = true, version = "1.0",
         description = "A command-line tool to parse and query GFF3 files.")
 public class CommandLineParser implements Runnable {
-
+    public static final Logger logger = LogManager.getLogger(CommandLineParser.class.getName());
     // Define input files
     @CommandLine.Parameters(index = "0", description = "The path to the input GFF3 file.")
     private Path inputGffFile;
@@ -122,12 +123,12 @@ public class CommandLineParser implements Runnable {
             ReturnFile.checkFileDir(output_file);
             GffProcessor.gffParser(options);
         } else if (extended && delete) {
-            logger.fatal("not allowed");
+            logger.error("not allowed");
         } else if (extended) {
             ReturnFile.checkFileDir(output_file);
             LinkedList<Feature> listFeatures = GffParser.gffParser(options.getInputGffFile());
             //LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
-           //ReturnFileExtended(listFilterEFeatures, headers);
+            //ReturnFileExtended(listFilterEFeatures, headers);
         }else {
             logger.error("Didn't give up any filtering or anything other.");
         }

@@ -4,13 +4,14 @@ import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.OptionsProcessor;
 import nl.bioinf.alpruis.operation.filterSE.GffParser;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
 
-import static nl.bioinf.alpruis.Main.logger;
 
 /**
  * The GffParser class is responsible for parsing GFF3 files, creating Feature objects,
@@ -21,6 +22,7 @@ public class GffProcessor {
 // TODO logger.warn for when the given list with options includes one that simply doesn't exist in the gff file (lvl 1)
 // TODO exit condition when the list is empty only use ID and Chromosome. Not for Source, Type and Attributes.
 // TODO For region maybe when a feature is not in that region anymore exit condition.
+    private static final Logger logger = LogManager.getLogger(GffProcessor.class.getName());
     /**
      * Parses the provided GFF3 file and returns a LinkedList of Feature objects.
      * Each feature is parsed line by line, and parent-child relationships are handled.
