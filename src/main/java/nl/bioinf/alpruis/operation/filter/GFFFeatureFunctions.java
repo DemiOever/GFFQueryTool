@@ -27,33 +27,62 @@ public class GFFFeatureFunctions {
         return mapInput;
     }
 
-    public static boolean filterLine(String filter, List<String> listInput, boolean delete) {
-        if (delete) {
-            return !listInput.contains(filter);
+    private static boolean filterLine(String filter, List<String> listInput, boolean delete, boolean useContains) {
+        boolean contains = false;
+        if (useContains) {
+            System.out.println("something");
+            for (String attr : listInput) {
+                if (delete) {
+                    contains = !attr.contains(filter);
+                } else {
+                    contains = attr.contains(filter);
+                    System.out.println("something else");
+
+                }
+                if (contains) {
+                    System.out.println("why not contains");
+
+                    break;
+                }
+            }
         } else {
-            return listInput.contains(filter);
+            if (delete) {
+                return !listInput.contains(filter);
+            } else {
+                return listInput.contains(filter);
+            }
         }
+        return contains;
     }
 
-    public static boolean filterRegion(Feature feature, List<String> listInput, boolean delete) {
+    private static boolean filterRegion(Feature feature, List<String> listInput, boolean delete, boolean useContains) {
         for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = Integer.parseInt(listInput.get(i));
             int regionEnd = Integer.parseInt(listInput.get(i + 1));
-            if (regionStart < feature.getStart() && regionEnd > feature.getEnd()) {
+
+            // Check if feature partially or fully overlaps with the region
+            boolean overlaps = feature.getStart() <= regionEnd && feature.getEnd() >= regionStart;
+            boolean inside = regionStart < feature.getStart() && regionEnd > feature.getEnd();
+
+            // If the region contains the feature (or overlaps), act based on the delete flag
+            if (useContains && overlaps) {
+                return !delete;
+            } else if (!useContains && inside) {
                 return !delete;
             }
         }
-        return delete;
+        return delete; // If no overlap is found and we are deleting, return true
     }
+
 
     public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean delete, boolean useContains) {
         return switch (column) {
-            case "ID" -> filterLine(feature.getID(), inputValues, delete);
-            case "Type" -> filterLine(feature.getType(), inputValues, delete);
-            case "Chromosome" -> filterChromosome(feature.getSeqId(), inputValues, delete);
-            case "Region" -> filterRegion(feature, inputValues, delete);
-            case "Attributes" -> filterAttributes(feature.getAttributes(), inputValues, delete, useContains);
-            case "Source" -> filterLine(feature.getSource(), inputValues, delete);
+            case "ID" -> filterLine(feature.getID(), inputValues, delete, useContains);
+            case "TYPE" -> filterLine(feature.getType(), inputValues, delete, useContains);
+            case "CHROMOSOME" -> filterChromosome(feature.getSeqId(), inputValues, delete);
+            case "REGION" -> filterRegion(feature, inputValues, delete, useContains);
+            case "ATTRIBUTES" -> filterAttributes(feature.getAttributes(), inputValues, delete, useContains);
+            case "SOURCE" -> filterLine(feature.getSource(), inputValues, delete, useContains);
             default -> false;
         };
     }
@@ -65,7 +94,7 @@ public class GFFFeatureFunctions {
      * @param listInput Map containing attribute key-value pairs to match for deletion.
      * @return The filtered LinkedList of GFF features.
      */
-    public static boolean filterAttributes(Map<String, String> featureAttributes, List<String> listInput, boolean delete, boolean useContains) {
+    private static boolean filterAttributes(Map<String, String> featureAttributes, List<String> listInput, boolean delete, boolean useContains) {
         Map<String, List<String>> mapInput = parseList(listInput);  // Parse the input into key -> list of values
         boolean foundMatch = false;  // Track if we found any match across all entries
 
