@@ -126,8 +126,8 @@ public class CommandLineParser implements Runnable {
         } else if (extended) {
             ReturnFile.checkFileDir(output_file);
             LinkedList<Feature> listFeatures = GffParser.gffParser(options.getInputGffFile());
-            LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
-            ReturnFileExtended(listFilterEFeatures, headers);
+            //LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
+            //ReturnFileExtended(listFilterEFeatures, headers);
         }else {
             logger.error("Didn't give up any filtering or anything other.");
         }
