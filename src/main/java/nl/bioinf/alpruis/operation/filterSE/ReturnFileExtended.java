@@ -1,7 +1,8 @@
-package nl.bioinf.alpruis.operation.filter_ex_sum;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
+import nl.bioinf.alpruis.OptionsProcessor;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -103,13 +104,14 @@ public class ReturnFileExtended {
      * @param result The list of features to write.
      * @param seq A map containing sequences, used for the FASTA output.
      */
-    public static void chooseTypeFile(Path outputFile, LinkedList<Feature> result, Map<String, String> seq) {
+    public static void chooseTypeFile(OptionsProcessor options, LinkedList<Feature> result) {
+        Path outputFile = options.getOutputFile();
         String fileName = outputFile.getFileName().toString().toLowerCase();
 
         // Handle different output formats based on file extension
         if (fileName.endsWith(".fasta")) {
             checkFileDir(outputFile);
-            returnFasta(outputFile, result, seq);
+            returnFasta(outputFile, result, options.getSequence());
         } else if (fileName.endsWith(".gff")) {
             checkFileDir(outputFile);
             returnGff(outputFile, result);
@@ -122,7 +124,7 @@ public class ReturnFileExtended {
         } else {
             // Unsupported file format, default to GFF output
             logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
-            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
+            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1) - Demi
 
             // Create a default path for the output file
             

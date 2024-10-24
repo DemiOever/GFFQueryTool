@@ -2,20 +2,21 @@ package nl.bioinf.alpruis;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-// TODO Sets making aswell because might need to use when using exit condition and list has to be updated(??)
+// TODO Setters making as well because might need to use when using exit condition and list has to be updated(??)
 public class OptionsProcessor {
 
-    private Path inputGffFile;
-    private Map<String, String> sequence;
-    private boolean validate;
-    private boolean summary;
-    private boolean delete;
-    private boolean extended;
-    private Path outputFile;
-    private Map<String, List<String>> finalListFilter;
+    private final Path inputGffFile;
+    private final Map<String, String> sequence;
+    private final boolean validate;
+    private final boolean summary;
+    private final boolean delete;
+    private final boolean extended;
+    private final Path outputFile;
+    private final Map<String, List<String>> finalListFilter;
+    private final boolean useContains;
 
     public OptionsProcessor(Path inputGffFile, Map<String, String> sequence, boolean validate, boolean summary,
-                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter) {
+                                  boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter, boolean useContains) {
         this.inputGffFile = inputGffFile;
         this.sequence = sequence;
         this.validate = validate;
@@ -24,6 +25,7 @@ public class OptionsProcessor {
         this.extended = extended;
         this.outputFile = outputFile;
         this.finalListFilter = finalListFilter;
+        this.useContains = useContains;
     }
 
     // Getters and setters for each field
@@ -59,4 +61,6 @@ public class OptionsProcessor {
     public Map<String, List<String>> getListFilter() {
         return finalListFilter;
     }
+
+    public boolean getContains() {return useContains;}
 }

@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis.operation.filter_ex_sum;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.Feature;
 
@@ -71,7 +71,7 @@ public class GFFFeatureFunctionsExtended {
     }
 
     /**
-     * Deletes features from the list that fall outside of the specified regions.
+     * Deletes features from the list that fall outside the specified regions.
      *
      * @param gffFeatures_del LinkedList of GFF features to be filtered.
      * @param listInput List of start and end positions defining the regions.
@@ -206,5 +206,36 @@ public class GFFFeatureFunctionsExtended {
     public static LinkedList<Feature> fetchSource(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
         gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getSource()));
         return gffFeatures_fetch;
+    }
+
+    public static boolean filterLine(String filter, List<String> listInput, boolean extended) {
+        if (extended) { // TODO make work for extended
+            return !listInput.contains(filter);
+        } else {
+            return listInput.contains(filter);
+        }
+    }
+
+    public static boolean filterRegion(Feature feature, List<String> listInput, boolean extended) {
+        for (int i = 0; i < listInput.size(); i += 2) { // TODO make work for extended
+            int regionStart = Integer.parseInt(listInput.get(i));
+            int regionEnd = Integer.parseInt(listInput.get(i + 1));
+            if (regionStart < feature.getStart() && regionEnd > feature.getEnd()) {
+                return !extended;
+            }
+        }
+        return extended;
+    }
+
+    public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean extended, boolean useContains) {
+        return switch (column) { // TODO make work for extended
+            case "ID" -> filterLine(feature.getID(), inputValues, extended);
+            case "Type" -> filterLine(feature.getType(), inputValues, extended);
+            //case "Chromosome" -> filterChromosome(feature.getSeqId(), inputValues, delete);
+            case "Region" -> filterRegion(feature, inputValues, extended);
+            //case "Attributes" -> filterAttributes(feature.getAttributes(), inputValues, delete, useContains);
+            case "Source" -> filterLine(feature.getSource(), inputValues, extended);
+            default -> false;
+        };
     }
 }

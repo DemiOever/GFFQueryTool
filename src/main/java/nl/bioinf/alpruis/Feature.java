@@ -20,12 +20,12 @@ public class Feature {
     private final String strand;
     private final String phase;
     private final Map<String, String> attributes;
-    private List<String> children;
+    private final List<String> children;
 
     /**
      * Constructs a Feature object with the provided information.
      *
-     * @param seqId      the sequence ID on which this feature is located (e.g., chromosome or contig).
+     * @param seqId      the sequence ID on which this feature is located (e.g., chromosome).
      * @param source     the source that created this feature (e.g., a prediction program).
      * @param type       the type of the feature (e.g., gene, exon).
      * @param start      the start position of the feature on the sequence.
@@ -45,11 +45,11 @@ public class Feature {
         this.strand = strand;
         this.phase = phase;
         this.attributes = attributes;
-        this.children = new ArrayList<String>();
+        this.children = new ArrayList<>();
     }
 
     /**
-     * Gets the sequence ID (e.g., chromosome or contig) where this feature is located.
+     * Gets the sequence ID (e.g., chromosome) where this feature is located.
      *
      * @return the sequence ID.
      */
@@ -219,7 +219,7 @@ public class Feature {
         StringBuilder sb = new StringBuilder();
         for (String attr : attributes.keySet()) {
             String value = attributes.get(attr);
-            sb.append(attr + "=" + value + ";");
+            sb.append(attr).append("=").append(value).append(";");
         }
         // Remove the trailing semicolon
         return sb.toString().replaceAll(";$", "");

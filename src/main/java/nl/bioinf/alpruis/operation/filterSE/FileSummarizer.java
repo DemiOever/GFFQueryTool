@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis.operation.filter_ex_sum;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.Feature;
 import org.apache.logging.log4j.LogManager;
@@ -7,8 +7,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import java.util.HashMap;
 
 /**
  * Utility class to provide summary statistics for biological sequence files and GFF3 features.
@@ -64,7 +62,7 @@ public class FileSummarizer {
      * @param sequence a map of sequences from a FASTA file.
      * @return a FeatureSummary object containing various statistics about the features and sequences.
      */
-    public FeatureSummary summarizeFeatures(List<Feature> features, Map<String,String> sequence) {
+    public FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
         Map<String, Integer> countingFeatures = new HashMap<>();
         Map<String, Integer> countingSources = new HashMap<>();
 
@@ -88,21 +86,17 @@ public class FileSummarizer {
             }
 
             String strand = feature.getStrand();
-            if (Objects.equals(strand, "+")) {
-                forwardStrands++;
-            } else if (Objects.equals(strand, "-")) {
-                reverseStrands++;
-            } else if (Objects.equals(strand, ".")) {
-                unknownStrands++;
-            }else {
-                logger.error("Unknown stand direction: " + strand);
+            switch (strand) {
+                case "+" -> forwardStrands++;
+                case "-" -> reverseStrands++;
+                case "." -> unknownStrands++;
             }
 
             if (Objects.equals(feature.getType(), "region")) {
-                regions.add(feature.getChromosome());
+                regions.add(feature.getSeqId());
             }
         }
-        logger.warn("In the strand column are {} found as empty.", unknownStrands);
+        logger.warn("In the strand column are {} found as empty.", unknownStrands); //TODO research and change if possible to catch this
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
         return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, countingSources, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);

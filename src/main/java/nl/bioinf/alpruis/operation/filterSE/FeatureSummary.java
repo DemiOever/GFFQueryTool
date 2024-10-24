@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis.operation.filter_ex_sum;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import java.util.List;
 import java.util.Map;
@@ -8,15 +8,15 @@ import java.util.Map;
  * such as sequence length, GC content, feature counts, gene counts, strand orientation, and more.
  */
 public class FeatureSummary {
-    private Long seqLength;
-    private double percentageGC;
-    private Map<String, Integer> countingFeatures;
-    private Map<String, Integer> countingSources;
-    private List<String> regions;
-    private int countGenes;
-    private long avgLengthGenes;
-    private int forwardStrands;
-    private int reverseStrands;
+    private final Long seqLength;
+    private final double percentageGC;
+    private final Map<String, Integer> countingFeatures;
+    private final Map<String, Integer> countingSources;
+    private final List<String> regions;
+    private final int countGenes;
+    private final long avgLengthGenes;
+    private final int forwardStrands;
+    private final int reverseStrands;
 
     /**
      * Constructor for the FeatureSummary class.
@@ -40,6 +40,42 @@ public class FeatureSummary {
         this.avgLengthGenes = avgLengthGenes;
         this.forwardStrands = forwardStrands;
         this.reverseStrands = reverseStrands;
+    }
+
+    public int getCountGenes() {
+        return countGenes;
+    }
+
+    public long getAvgLengthGenes() {
+        return avgLengthGenes;
+    }
+
+    public int getForwardStrands() {
+        return forwardStrands;
+    }
+
+    public int getReverseStrands() {
+        return reverseStrands;
+    }
+
+    public Long getSeqLength() {
+        return seqLength;
+    }
+
+    public double getPercentageGC() {
+        return percentageGC;
+    }
+
+    public Map<String, Integer> getCountingFeatures() {
+        return countingFeatures;
+    }
+
+    public Map<String, Integer> getCountingSources() {
+        return countingSources;
+    }
+
+    public List<String> getRegions() {
+        return regions;
     }
 
     /**

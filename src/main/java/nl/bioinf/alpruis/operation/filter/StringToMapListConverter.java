@@ -11,7 +11,7 @@ public class StringToMapListConverter implements CommandLine.ITypeConverter<Map<
     public Map<String, List<String>> convert(String value) {
         Map<String, List<String>> map = new HashMap<>();
         try {
-            map.put(value.split("==")[0], List.of(value.split("==")[1].split(",")));
+            map.put(value.split("==")[0].toUpperCase(), List.of(value.split("==")[1].split(",")));
         } catch (Exception e) {
             ErrorThrower.throwErrorE(e);
         }

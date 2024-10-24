@@ -3,9 +3,7 @@ package nl.bioinf.alpruis;
 import nl.bioinf.alpruis.operation.filter.GffProcessor;
 import nl.bioinf.alpruis.operation.filter.ReturnFile;
 import nl.bioinf.alpruis.operation.filter.StringToMapListConverter;
-import nl.bioinf.alpruis.operation.filter_ex_sum.FeatureSummary;
-import nl.bioinf.alpruis.operation.filter_ex_sum.FileSummarizer;
-import nl.bioinf.alpruis.operation.filter_ex_sum.GffParser;
+import nl.bioinf.alpruis.operation.filterSE.*;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
@@ -21,30 +19,33 @@ import static nl.bioinf.alpruis.Main.logger;
 public class CommandLineParser implements Runnable {
 
     // Define input files
-    @CommandLine.Parameters(index = "0", description = "The input GFF3 file.")
+    @CommandLine.Parameters(index = "0", description = "The path to the input GFF3 file.")
     private Path inputGffFile;
 
-    @CommandLine.Parameters(index = "1", description = "The input FASTA file.")
+    @CommandLine.Parameters(index = "1", description = "The path to the input FASTA file.")
     private Path inputFastaFile;
 
     // Define options
-    @CommandLine.Option(names = {"-vf","--validate"}, description = "Validates the GFF3 and FASTA files.")
+    @CommandLine.Option(names = {"-v","--validate"}, description = "Validates the files(both fasta and gff) if it has the right gff3 and fasta format.")
     private boolean validate;
 
-    @CommandLine.Option(names = {"-o", "--output_file"}, description = "The output file location. If not specified, a default file will be created.")
+    @CommandLine.Option(names = {"-o", "--output_file"}, description = "Put here the location of the output file with filename, preferably with a extension(.gff/.fasta/.csv/.txt). If this is left empty one will be created for you with default name and extension.")
     private Path output_file;
 
-    @CommandLine.Option(names = {"-sum", "--summary"}, description = "Generates a summary of the file contents including feature types, GC percentage, and more.")
+    @CommandLine.Option(names = {"-s", "--summary"}, description = "Gives back a summary of the files and includes: length of the sequence, gc-percentage, feature types with the amount present, different sources and amount present, amount of genes, average length of genes, amount of forward and reverse strands and names of all the regions.")
     private boolean summary;
 
-    @CommandLine.Option(names = {"-d","--delete"}, description = "Deletes specified feature(s). If not specified, features will be fetched.")
+    @CommandLine.Option(names = {"-d","--delete"}, description = "Deletes given feature part/parts, default is false which means it will fetch given element. To use this simply type the -d or --delete. Needs to be combined with --filter.")
     private boolean delete;
 
-    @CommandLine.Option(names = {"-e","--extended"}, description = "Includes parent and child features in the results.")
+    @CommandLine.Option(names = {"-e","--extended"}, description = "This allows the parent and children of the feature to be included. Default is false but when used turned to true.")
     private boolean extended; // TODO make this work somehow (lvl 2)
 
-    @CommandLine.Option(names = {"-f", "--filter"}, description = "column name = list with things to fetch or delete")
-    private String listFilter; // TODO change the descriptions of all options and parameters to be more clear
+    @CommandLine.Option(names = {"-f", "--filter"}, description = "column name(ID, Chromosome, Type, Source, Region, Attributes) == list with things seperated by a comma to fetch or delete. Example: Type==gene,exon")
+    private String listFilter;
+
+    @CommandLine.Option(names = {"-c","--contains"}, description = "If used it uses regex instead of equals")
+    private boolean contains;
 //TODO maybe able to specify filter multiple times
 //TODO add the contains/equals option
     /**
@@ -72,14 +73,8 @@ public class CommandLineParser implements Runnable {
 
         if (gffValid && fastaValid) {
             logger.info("Both files are valid.");
-        } else if (!gffValid) {
-            logger.fatal("Invalid GFF3 file.");
-            System.exit(1);
-        } else if (!fastaValid) {
-            logger.fatal("Invalid FASTA file.");
-            System.exit(1);
         } else {
-            logger.info("Both files are invalid.");
+            logger.info("Both or one of the files are invalid.");
             System.exit(1);
         }
     }
@@ -114,18 +109,27 @@ public class CommandLineParser implements Runnable {
     /**
      * Filters features based on command-line options.
      */
-    private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change aswell (lvl 2)
+    private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change as well (lvl 2)
         System.out.println(listFilter);
         StringToMapListConverter converter = new StringToMapListConverter();
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);
         System.out.println(finalListFilter);
         OptionsProcessor options = new OptionsProcessor(inputGffFile, sequence, validate, summary,
-                delete, extended, output_file, finalListFilter);
+                delete, extended, output_file, finalListFilter, contains);
 
         if (listFilter != null) {
             //logger.info("Getting ready to parse and filter GFF3 file...");
             ReturnFile.checkFileDir(output_file);
             GffProcessor.gffParser(options);
+        } else if (extended && delete) {
+            logger.fatal("not allowed");
+        } else if (extended) {
+            ReturnFile.checkFileDir(output_file);
+            LinkedList<Feature> listFeatures = GffParser.gffParser(options.getInputGffFile());
+            //LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
+           //ReturnFileExtended(listFilterEFeatures, headers);
+        }else {
+            logger.error("Didn't give up any filtering or anything other.");
         }
         //TODO put the extended option here
 

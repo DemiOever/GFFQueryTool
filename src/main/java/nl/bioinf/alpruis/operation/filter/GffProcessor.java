@@ -3,12 +3,11 @@ package nl.bioinf.alpruis.operation.filter;
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.OptionsProcessor;
-import nl.bioinf.alpruis.operation.filter_ex_sum.GffParser;
+import nl.bioinf.alpruis.operation.filterSE.GffParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 import static nl.bioinf.alpruis.Main.logger;
@@ -30,19 +29,20 @@ public class GffProcessor {
      * @param options the path   to the GFF3 file to be parsed.
      */
     public static void gffParser(OptionsProcessor options) {
-        List<String> headers = new ArrayList<>();
-
         try (BufferedReader reader = Files.newBufferedReader(options.getInputGffFile())) {
             String line;
+
             for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
                 // Process each line of the GFF3 file
                 while ((line = reader.readLine()) != null) {
                     boolean filter;
+
                     if (line.startsWith("#")) {
-                        headers.add(line);  // Add header to the list
+                        ReturnFile.writeHeader(line, options);  // Add header to the list
                     } else {
                         Feature feature = parseLine(line);
-                        filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete());
+                        filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete(), options.getContains());
+
                         if (filter) {
                             ReturnFile.chooseTypeFile(feature, options);
                         } // else keep going
