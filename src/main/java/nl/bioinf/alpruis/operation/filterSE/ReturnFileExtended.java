@@ -1,4 +1,4 @@
-package nl.bioinf.alpruis.operation.filter_ex_sum;
+package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
@@ -124,7 +124,7 @@ public class ReturnFileExtended {
         } else {
             // Unsupported file format, default to GFF output
             logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
-            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1)
+            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1) - Demi
 
             // Create a default path for the output file
             

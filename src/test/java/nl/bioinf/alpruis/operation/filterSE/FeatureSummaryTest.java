@@ -2,7 +2,6 @@ package nl.bioinf.alpruis.operation.filterSE;
 
 import java.util.*;
 
-import nl.bioinf.alpruis.operation.filter_ex_sum.FeatureSummary;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

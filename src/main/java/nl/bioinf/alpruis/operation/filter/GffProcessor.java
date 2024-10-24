@@ -3,7 +3,7 @@ package nl.bioinf.alpruis.operation.filter;
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.OptionsProcessor;
-import nl.bioinf.alpruis.operation.filter_ex_sum.GffParser;
+import nl.bioinf.alpruis.operation.filterSE.GffParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
