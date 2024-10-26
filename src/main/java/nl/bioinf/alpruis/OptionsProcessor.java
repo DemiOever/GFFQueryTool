@@ -2,7 +2,7 @@ package nl.bioinf.alpruis;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-// TODO Setters making as well because might need to use when using exit condition and list has to be updated(??)
+
 public class OptionsProcessor {
 
     private final Path inputGffFile;

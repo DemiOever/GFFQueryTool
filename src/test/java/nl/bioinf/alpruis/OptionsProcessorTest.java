@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class OptionsProcessorTest {
     void setUp() {
         // Initialize the test data
         Path inputGffFile = Path.of("src/test/resources/valid_gff.gff");
-        sequence = new HashMap<>();
+        sequence = new LinkedHashMap<>();
         sequence.put("seq1", "ATCG");
         boolean validate = true;
         boolean summary = false;
@@ -37,7 +37,7 @@ public class OptionsProcessorTest {
         Path outputFile = Path.of("output.txt");
         boolean contains = false;
 
-        finalListFilter = new HashMap<>();
+        finalListFilter = new LinkedHashMap<>();
         finalListFilter.put("filter1", Arrays.asList("value1", "value2"));
 
         Object listAttribute = Arrays.asList("attribute1", "attribute2");

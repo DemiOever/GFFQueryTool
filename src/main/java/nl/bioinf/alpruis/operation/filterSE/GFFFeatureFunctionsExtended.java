@@ -95,7 +95,7 @@ public class GFFFeatureFunctionsExtended {
      * @return The filtered LinkedList of GFF features.
      */
     public static LinkedList<Feature> deleteChromosome(LinkedList<Feature> gffFeatures_del, List<String> listInput) {
-        gffFeatures_del.removeIf(feature -> listInput.contains(feature.getChromosome()));
+        gffFeatures_del.removeIf(feature -> listInput.contains(feature.getSeqId()));
         return gffFeatures_del;
     }
 
@@ -192,7 +192,7 @@ public class GFFFeatureFunctionsExtended {
      * @return The filtered LinkedList of GFF features.
      */
     public static LinkedList<Feature> fetchChromosome(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
-        gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getChromosome()));
+        gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getSeqId()));
         return gffFeatures_fetch;
     }
 

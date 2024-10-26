@@ -2,21 +2,22 @@ package nl.bioinf.alpruis;
 
 import nl.bioinf.alpruis.operation.filter.GffProcessor;
 import nl.bioinf.alpruis.operation.filter.ReturnFile;
-import nl.bioinf.alpruis.operation.filter.StringToMapListConverter;
 import nl.bioinf.alpruis.operation.filterSE.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import picocli.CommandLine;
 
 import java.nio.file.Path;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static nl.bioinf.alpruis.FileUtils.fileValidator;
-import static nl.bioinf.alpruis.Main.logger;
 
 @CommandLine.Command(name = "GffCommandLine", mixinStandardHelpOptions = true, version = "1.0",
         description = "A command-line tool to parse and query GFF3 files.")
 public class CommandLineParser implements Runnable {
+    private static final Logger logger = LogManager.getLogger(CommandLineParser.class.getName());
 
     // Define input files
     @CommandLine.Parameters(index = "0", description = "The path to the input GFF3 file.")
@@ -26,7 +27,7 @@ public class CommandLineParser implements Runnable {
     private Path inputFastaFile;
 
     // Define options
-    @CommandLine.Option(names = {"-v","--validate"}, description = "Validates the files(both fasta and gff) if it has the right gff3 and fasta format.")
+    @CommandLine.Option(names = {"-vf","--validate"}, description = "Validates the files(both fasta and gff) if it has the right gff3 and fasta format.")
     private boolean validate;
 
     @CommandLine.Option(names = {"-o", "--output_file"}, description = "Put here the location of the output file with filename, preferably with a extension(.gff/.fasta/.csv/.txt). If this is left empty one will be created for you with default name and extension.")
@@ -46,19 +47,33 @@ public class CommandLineParser implements Runnable {
 
     @CommandLine.Option(names = {"-c","--contains"}, description = "If used it uses regex instead of equals")
     private boolean contains;
+
+    @CommandLine.Option(names = "-v")
+    private boolean[] verbose = new boolean[0];
+
 //TODO maybe able to specify filter multiple times
-//TODO add the contains/equals option
     /**
      * Executes the command-line options and performs the corresponding file processing tasks such as validation, feature extraction, or summary generation.
      */
     @Override
     public void run() {
+        //System.out.println(Arrays.toString(verbose));
+        if (verbose.length > 1) {
+            // Set logging to DEBUG
+            Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.DEBUG);
+        } else if (verbose.length > 0) {
+            // Set logging to INFO
+            Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.INFO);
+
+        }
+
         if (validate) {
             validateFiles();
         } else {
             validateFiles(); // Always validate before processing
             processFiles();
         }
+        logger.debug("Program finished");
     }
 
     /**
@@ -109,11 +124,9 @@ public class CommandLineParser implements Runnable {
     /**
      * Filters features based on command-line options.
      */
-    private void filterFeatures(Map<String, String> sequence) { //TODO if the GFFFeatureFunctions change this will need to change as well (lvl 2)
-        System.out.println(listFilter);
+    private void filterFeatures(Map<String, String> sequence) {
         StringToMapListConverter converter = new StringToMapListConverter();
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);
-        System.out.println(finalListFilter);
         OptionsProcessor options = new OptionsProcessor(inputGffFile, sequence, validate, summary,
                 delete, extended, output_file, finalListFilter, contains);
 
@@ -133,5 +146,18 @@ public class CommandLineParser implements Runnable {
         }
         //TODO put the extended option here
 
+    }
+
+    public static class StringToMapListConverter implements CommandLine.ITypeConverter<Map<String, List<String>>> { //TODO tests to be made
+        @Override
+        public Map<String, List<String>> convert(String value) {
+            Map<String, List<String>> map = new LinkedHashMap<>();
+            try {
+                map.put(value.split("==")[0].toUpperCase(), List.of(value.split("==")[1].split(",")));
+            } catch (Exception e) {
+                ErrorThrower.throwErrorE(e);
+            }
+            return map;
+        }// TODO changes have to be added to help and readme so explanation and usage change
     }
 }

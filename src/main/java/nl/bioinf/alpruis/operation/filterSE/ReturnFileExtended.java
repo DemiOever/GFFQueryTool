@@ -12,8 +12,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static nl.bioinf.alpruis.Main.logger;
-
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
  * The file format is determined based on the file extension, and appropriate methods are used to output the data.
@@ -123,7 +121,7 @@ public class ReturnFileExtended {
             returnTxt(outputFile, result);
         } else {
             // Unsupported file format, default to GFF output
-            logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
+            //logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
             // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1) - Demi
 
             // Create a default path for the output file

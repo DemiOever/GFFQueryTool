@@ -63,8 +63,8 @@ public class FileSummarizer {
      * @return a FeatureSummary object containing various statistics about the features and sequences.
      */
     public FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
-        Map<String, Integer> countingFeatures = new HashMap<>();
-        Map<String, Integer> countingSources = new HashMap<>();
+        Map<String, Integer> countingFeatures = new LinkedHashMap<>();
+        Map<String, Integer> countingSources = new LinkedHashMap<>();
 
         List<String> regions = new ArrayList<>();
 
