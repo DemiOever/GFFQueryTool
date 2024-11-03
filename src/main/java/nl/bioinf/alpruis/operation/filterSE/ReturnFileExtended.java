@@ -30,6 +30,7 @@ public class ReturnFileExtended {
      */
     private static void returnFasta(Path outFile, LinkedList<Feature> result, Map<String, String> seq) { //TODO make the method work (lvl 3)
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            writer.write(GffParser.headers)
             for (Feature feature : result) {
                 writer.write(">Feature " + feature.getID()); // Writes feature ID as FASTA header
                 writer.newLine();
@@ -100,9 +101,8 @@ public class ReturnFileExtended {
      * Determines the file type based on the file extension and writes the features to the appropriate format.
      * Supports FASTA, GFF, CSV, and plain text formats. For unsupported formats, writes to a default GFF file.
      *
-     * @param outputFile The output file path.
+     * @param options The output file path.
      * @param result The list of features to write.
-     * @param seq A map containing sequences, used for the FASTA output.
      */
     public static void chooseTypeFile(OptionsProcessor options, LinkedList<Feature> result) {
         Path outputFile = options.getOutputFile();
@@ -123,16 +123,14 @@ public class ReturnFileExtended {
             returnTxt(outputFile, result);
         } else {
             // Unsupported file format, default to GFF output
-            //logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
-            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1) - Demi
+            logger.info("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
 
-            // Create a default path for the output file
-            
             Path defaultOutFile = outputFile.getParent() != null ?
                     outputFile.getParent().resolve("output_GFQueryTool.gff") :
                     Path.of("output_GFQueryTool.gff");
 
             // Write to the default GFF file
+            checkFileDir(defaultOutFile);
             returnGff(defaultOutFile, result);
         }
     }

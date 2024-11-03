@@ -96,7 +96,7 @@ public class FileSummarizer {
                 regions.add(feature.getSeqId());
             }
         }
-        logger.warn("In the strand column are {} found as empty.", unknownStrands); //TODO research and change if possible to catch this
+        logger.warn("In the strand column are {} found as empty.", unknownStrands);
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
         return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, countingSources, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
