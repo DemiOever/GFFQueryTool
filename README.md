@@ -42,17 +42,16 @@ java -jar GFFQueryTool.jar [-dehVs] [-vf] [-o=<output_file>]
 
 ### Command Options
 
-| Option                | Description                                                                                                                                                                                                                         |
-|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **-d, --delete**      | Deletes specified feature(s) when used with other options; if not used, it fetches instead. Must be combined with `--filter`.                                                                                                   |
-| **-e, --extended**    | Includes parent and child features in the results. Default is `false`.                                                                                                                                                           |
-| **-h, --help**        | Displays help information.                                                                                                                                                                                                          |
-| **-o, --output_file** | Specifies the output file path. Supported extensions: `.fasta`, `.gff`, `.txt`, `.csv`. Example: `-o output.fasta`                                                                                                                |
-| **-s, --summary**     | Generates a summary of the GFF and FASTA files, including sequence length, GC percentage, feature types, sources, gene statistics, and strand counts.                                                                             |
-| **-f, --filter**      | Filters based on specified criteria for columns: [ID, Type, Chromosome, Region, Attributes, Source]. Example: `ID==123,456`.                                                                                                   |
-| **-V, --version**     | Displays the tool's version information.                                                                                                                                                                                          |
-| **-vf, --validate**   | Validates the input GFF and FASTA files for the correct format.                                                                                                                                                                   |
-| **-c, --contains**    | Allows attribute filtering using a "contains" approach rather than an exact match.                                                                                                                                               |
+| Option                | Description                                                                                                                                           |
+|-----------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **-d, --delete**      | Deletes specified feature(s) when used with other options; if not used, it fetches instead. Must be combined with `--filter`.                         |
+| **-h, --help**        | Displays help information.                                                                                                                            |
+| **-o, --output_file** | Specifies the output file path. Supported extensions: `.gff`, `.txt`, `.csv`. Example: `-o output.gff`. If not specified, default is `.gff`             |
+| **-s, --summary**     | Generates a summary of the GFF and FASTA files, including sequence length, GC percentage, feature types, sources, gene statistics, and strand counts. |
+| **-f, --filter**      | Filters based on specified criteria for columns: [ID, Type, Chromosome, Region, Attributes, Source]. Example: `ID==123,456`.                          |
+| **-V, --version**     | Displays the tool's version information.                                                                                                              |
+| **-vf, --validate**   | Validates the input GFF and FASTA files for the correct format.                                                                                       |
+| **-c, --contains**    | Allows attribute filtering using a "contains" approach rather than an exact match.                                                                    |
 
 ### Filter Usage Examples
 
@@ -102,9 +101,6 @@ Example datasets can be found in the `src/main/resources/data` directory. These 
 
 ## Output Formats
 
-### FASTA
-The output will be a FASTA file containing original headers with only the retained features after filtering.
-
 ### GFF (Default)
 Example output:
 ```
@@ -132,8 +128,7 @@ Feature{seqID='NC_000067.7', source='RefSeq', type='region', start=1, end=195154
 
 ## Ongoing Development
 
-- Implementing the extended option to include child features.
-- Writing output in FASTA format when selected.
+- Implementing the extended option to include child features. Some methods for extended are already implemented, but the extended function isn't working yet.
 - Optimizing performance by addressing time-consuming classes/methods.
 - Completing tests for all methods and classes.
 - Ensuring default GFF output when no valid output file is specified.
