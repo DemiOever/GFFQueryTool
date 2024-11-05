@@ -113,5 +113,21 @@ public class GFFFeatureFunctionsTest {
     }
 
     //test for attributes
+    @Test
+    public void testAttribute(){
+        Feature feature = makeFeature();
+
+        assertTrue(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chromosome"), false, false));
+        assertTrue(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chromosome", "chromosome=1"), false, false));
+        assertTrue(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chr"), false, true));
+        assertTrue(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chr"), true, false));
+        assertTrue(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("gen=chr"), true, true));
+
+        assertFalse(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("gen=chromosome"), false, false));
+        assertFalse(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chr",""), false, false));
+        assertFalse(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("chr=1"), false, true));
+        assertFalse(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chromosome"), true, false));
+        assertFalse(GFFFeatureFunctions.filteringLine(feature, "ATTRIBUTES", List.of("genome=chr"), true, true));
+    }
 
 }

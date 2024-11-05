@@ -111,12 +111,6 @@ public class GFFFeatureFunctions {
         }
 
         // Now decide based on whether we're deleting or fetching
-        if (delete) {
-            // If deleting: return false if any match is found (i.e., we want to delete matched items)
-            return !foundMatch;  // Invert the match flag for deletion
-        } else {
-            // If fetching: return true only if any match is found (i.e., we want to keep matched items)
-            return foundMatch;
-        }
+        return delete != foundMatch;
     }
 }
