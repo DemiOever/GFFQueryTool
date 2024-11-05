@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Map;
 
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
@@ -20,19 +19,6 @@ import java.util.Map;
 
 public class ReturnFile {
     private static final Logger logger = LogManager.getLogger(ReturnFile.class.getName());
-        /**
-         * Writes a single feature to a file in FASTA format.
-         */
-        private static void returnFasta(Path outFile, Feature feature, Map<String, String> seq) {
-            try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.write(">Feature " + feature.getID()); // Writes feature ID as FASTA header
-                writer.newLine();
-                writer.write(feature.toString()); // Writes feature data
-                writer.newLine();
-            } catch (IOException ex) {
-                ErrorThrower.throwError(ex);
-            }
-        }
 
         /**
          * Writes a single feature to a file in GFF format.
@@ -63,7 +49,6 @@ public class ReturnFile {
          */
         private static void returnCsv(Path outFile, Feature feature) {
             try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.newLine();
                 writer.write(feature.toCsvFormat()); // Writes feature in CSV format
                 writer.newLine();
             } catch (IOException ex) {
@@ -79,22 +64,23 @@ public class ReturnFile {
             String fileName = outputFile.getFileName().toString().toLowerCase();
 
             // Handle different output formats based on file extension
-            if (fileName.endsWith(".fasta")) {
-                returnFasta(outputFile, feature, options.getSequence());
-            } else if (fileName.endsWith(".gff")) {
+            if (fileName.endsWith(".gff")) {
                 returnGff(outputFile, feature);
             } else if (fileName.endsWith(".csv")) {
                 returnCsv(outputFile, feature);
             } else if (fileName.endsWith(".txt")) {
                 returnTxt(outputFile, feature);
             } else {
+                //TODO doesn't work yet
+                logger.fatal("The path/file you gave up can not be reached.");
+                System.exit(1);
                 // Unsupported file format, default to GFF output
-                logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
+                /*logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
                 Path defaultOutFile = outputFile.getParent() != null ?
                         outputFile.getParent().resolve("output_GFQueryTool.gff") :
                         Path.of("output_GFQueryTool.gff");
 
-                returnGff(defaultOutFile, feature);
+                returnGff(defaultOutFile, feature);*/
             }
         }
 
