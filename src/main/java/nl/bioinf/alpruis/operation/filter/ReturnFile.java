@@ -7,9 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 /**
@@ -72,8 +74,11 @@ public class ReturnFile {
                 returnTxt(outputFile, feature);
             } else {
                 //TODO doesn't work yet
-                logger.fatal("The path/file you gave up can not be reached.");
-                System.exit(1);
+                outputFile = Paths.get("./output/standard_gff_outfile.gff");
+                options.setOutputFile(outputFile);
+                logger.warn("Given file was invalid so writing to:" + outputFile);
+                checkFileDir(options);
+                returnGff(outputFile, feature);
                 // Unsupported file format, default to GFF output
                 /*logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
                 Path defaultOutFile = outputFile.getParent() != null ?
@@ -84,15 +89,48 @@ public class ReturnFile {
             }
         }
 
-    public static void checkFileDir(Path outputFile) {
+    public static void checkOutputfileVariable(OptionsProcessor options) {
+        Path outputFile = options.getOutputFile();
 
-        // Create directory if it doesn't exist
+        // Case 1: No output file specified, set to default
+        if (outputFile == null || outputFile.toString().isEmpty()) {
+            outputFile = Paths.get("./output/standard_gff_outfile.gff");
+            options.setOutputFile(outputFile);
+            logger.debug("No file or path provided, using default: " + outputFile);
+        }
+        // Case 2: Only a directory is specified (e.g., ends with "\")
+        else if (Files.isDirectory(outputFile) || outputFile.toString().endsWith(File.separator)) {
+            outputFile = outputFile.resolve("standard_gff_outfile.gff");
+            options.setOutputFile(outputFile);
+            logger.debug("Directory provided, adding default filename: " + outputFile);
+        }
+        // Case 3: Only filename specified, add default directory
+        else if (outputFile.getParent() == null) {
+            if (outputFile.toString().contains(".")) {
+                outputFile = Paths.get("./output", outputFile.toString());
+            } else {
+                outputFile = Paths.get("./output", outputFile + ".gff");
+            }
+            options.setOutputFile(outputFile);
+            logger.debug("Filename provided without path, using default path: " + outputFile);
+        }
+    }
+
+    public static void checkFileDir(OptionsProcessor options) {
+        // Ensure outputFile variable is checked and set
+        Path outputFile = options.getOutputFile();
+
+        // Ensure the parent directory exists or create it
         Path parentDir = outputFile.getParent();
+        logger.debug("Output file path: " + outputFile);
+        logger.debug("Parent directory: " + parentDir);
+
         if (parentDir != null && !Files.exists(parentDir)) {
             try {
                 Files.createDirectories(parentDir);
             } catch (IOException ex) {
                 ErrorThrower.throwError(ex);
+                return;
             }
         }
 
@@ -106,6 +144,9 @@ public class ReturnFile {
             ErrorThrower.throwError(ex);
         }
     }
+
+
+
 
     public static void writeHeader(String line, OptionsProcessor options) {
             Path outFile = options.getOutputFile();

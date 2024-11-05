@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static nl.bioinf.alpruis.FileUtils.fileValidator;
+import static nl.bioinf.alpruis.operation.filter.ReturnFile.checkOutputfileVariable;
 
 @CommandLine.Command(name = "GffCommandLine", mixinStandardHelpOptions = true, version = "1.0",
         description = "A command-line tool to parse and query GFF3 files.")
@@ -64,7 +65,6 @@ public class CommandLineParser implements Runnable {
         } else if (verbose.length > 0) {
             // Set logging to INFO
             Configurator.setAllLevels(LogManager.getRootLogger().getName(), Level.INFO);
-
         }
 
         if (validate) {
@@ -98,16 +98,18 @@ public class CommandLineParser implements Runnable {
      * Processes GFF3 and FASTA files based on the command-line options.
      */
     private void processFiles() {//TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 4)
-        logger.info("Making sequence...");
-        Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
-        logger.info("Sequence has been made...");
 
         if (summary) {
             logger.info("Getting ready to parse GFF3 file...");
             LinkedList<Feature> gffFeatures = GffParser.gffParser(inputGffFile);
+            logger.info("Done parsing GFF3 file...");
+
+            logger.info("Making sequence...");
+            Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
+            logger.info("Sequence has been made...");
             generateSummary(gffFeatures, sequence);
-        } else {
-            filterFeatures(sequence);
+        } if (!listFilter.isEmpty()) {
+            filterFeatures();
         }
     }
 
@@ -124,20 +126,22 @@ public class CommandLineParser implements Runnable {
     /**
      * Filters features based on command-line options.
      */
-    private void filterFeatures(Map<String, String> sequence) {
+    private void filterFeatures() {
         StringToMapListConverter converter = new StringToMapListConverter();
         Map<String, List<String>> finalListFilter = converter.convert(listFilter);
-        OptionsProcessor options = new OptionsProcessor(inputGffFile, sequence, validate, summary,
+        OptionsProcessor options = new OptionsProcessor(inputGffFile, validate, summary,
                 delete, extended, output_file, finalListFilter, contains);
 
         if (listFilter != null) {
             //logger.info("Getting ready to parse and filter GFF3 file...");
-            ReturnFile.checkFileDir(output_file);
+            checkOutputfileVariable(options);
+            ReturnFile.checkFileDir(options);
+
             GffProcessor.gffParser(options);
         } else if (extended && delete) {
             logger.fatal("not allowed");
         } else if (extended) {
-            ReturnFile.checkFileDir(output_file);
+            ReturnFile.checkFileDir(options);
             LinkedList<Feature> listFeatures = GffParser.gffParser(options.getInputGffFile());
             //LinkedList<Feature> listFilterEFeatures = GFFFeatureFunctionsExtended(listFeatures);
            //ReturnFileExtended(listFilterEFeatures, headers);

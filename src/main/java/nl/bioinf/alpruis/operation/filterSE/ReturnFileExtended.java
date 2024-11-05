@@ -109,10 +109,7 @@ public class ReturnFileExtended {
         String fileName = outputFile.getFileName().toString().toLowerCase();
 
         // Handle different output formats based on file extension
-        if (fileName.endsWith(".fasta")) {
-            checkFileDir(outputFile);
-            returnFasta(outputFile, result, options.getSequence());
-        } else if (fileName.endsWith(".gff")) {
+        if (fileName.endsWith(".gff")) {
             checkFileDir(outputFile);
             returnGff(outputFile, result);
         } else if (fileName.endsWith(".csv")) {

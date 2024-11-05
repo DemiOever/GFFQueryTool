@@ -28,8 +28,6 @@ public class OptionsProcessorTest {
     void setUp() {
         // Initialize the test data
         Path inputGffFile = Path.of("src/test/resources/valid_gff.gff");
-        sequence = new LinkedHashMap<>();
-        sequence.put("seq1", "ATCG");
         boolean validate = true;
         boolean summary = false;
         boolean delete = true;
@@ -46,10 +44,9 @@ public class OptionsProcessorTest {
     @Test
     void optionsProcessorTest() {
         OptionsProcessor optionsProcessor = new OptionsProcessor(
-                inputGffFile, sequence, validate, summary, delete, extended, outputFile, finalListFilter, contains);
+                inputGffFile, validate, summary, delete, extended, outputFile, finalListFilter, contains);
 
         assertEquals(inputGffFile, optionsProcessor.getInputGffFile());
-        assertEquals(sequence, optionsProcessor.getSequence());
         assertEquals(validate, optionsProcessor.isValidate());
         assertEquals(summary, optionsProcessor.isSummary());
         assertEquals(delete, optionsProcessor.isDelete());

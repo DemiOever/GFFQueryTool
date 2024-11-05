@@ -6,19 +6,17 @@ import java.util.Map;
 public class OptionsProcessor {
 
     private final Path inputGffFile;
-    private final Map<String, String> sequence;
     private final boolean validate;
     private final boolean summary;
     private final boolean delete;
     private final boolean extended;
-    private final Path outputFile;
+    private Path outputFile;
     private final Map<String, List<String>> finalListFilter;
     private final boolean useContains;
 
-    public OptionsProcessor(Path inputGffFile, Map<String, String> sequence, boolean validate, boolean summary,
+    public OptionsProcessor(Path inputGffFile, boolean validate, boolean summary,
                                   boolean delete, boolean extended, Path outputFile, Map<String, List<String>> finalListFilter, boolean useContains) {
         this.inputGffFile = inputGffFile;
-        this.sequence = sequence;
         this.validate = validate;
         this.summary = summary;
         this.delete = delete;
@@ -32,10 +30,6 @@ public class OptionsProcessor {
 
     public Path getInputGffFile() {
         return inputGffFile;
-    }
-
-    public Map<String, String> getSequence() {
-        return sequence;
     }
 
     public boolean isValidate() {
@@ -63,4 +57,9 @@ public class OptionsProcessor {
     }
 
     public boolean getContains() {return useContains;}
+
+    public void setOutputFile(Path outputFile) {
+        this.outputFile = outputFile;
+    }
+
 }
