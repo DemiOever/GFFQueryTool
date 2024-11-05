@@ -20,10 +20,12 @@ public class ErrorThrower {
     public static void throwError(IOException ex) {
         logger.fatal("Something went wrong. Exiting.\n" +
                 "Error information: " + ex.getMessage() + ": " + ex.getCause());
+        System.exit(1);
     }
 
     public static void throwErrorE(Exception e) {
         logger.fatal("Something went wrong. Exiting.\n" +
                 "Error information: " + e.getMessage() + ": " + e.getCause());
+        System.exit(1);
     }
 } // TODO make the errors better and add more of them
