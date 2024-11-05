@@ -30,7 +30,7 @@ public class ReturnFileExtended {
      */
     private static void returnFasta(Path outFile, LinkedList<Feature> result, Map<String, String> seq) { //TODO make the method work (lvl 3)
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-            writer.write(GffParser.headers)
+            //writer.write(GffParser.headers);
             for (Feature feature : result) {
                 writer.write(">Feature " + feature.getID()); // Writes feature ID as FASTA header
                 writer.newLine();
