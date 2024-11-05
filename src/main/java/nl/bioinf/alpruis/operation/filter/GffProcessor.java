@@ -37,7 +37,9 @@ public class GffProcessor {
                     boolean filter;
 
                     if (line.startsWith("#")) {
-                        ReturnFile.writeHeader(line, options);  // Add header to the list
+                        if (options.getOutputFile().getFileName().toString().toLowerCase().endsWith(".gff")) {
+                            ReturnFile.writeHeader(line, options);  // Add header to the list
+                        }
                     } else {
                         Feature feature = parseLine(line);
                         filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete(), options.getContains());
