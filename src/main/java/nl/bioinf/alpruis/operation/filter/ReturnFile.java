@@ -22,72 +22,72 @@ import java.nio.file.StandardOpenOption;
 public class ReturnFile {
     private static final Logger logger = LogManager.getLogger(ReturnFile.class.getName());
 
-        /**
-         * Writes a single feature to a file in GFF format.
-         */
-        private static void returnGff(Path outFile, Feature feature) {
-            try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.write(feature.toGffFormat()); // Writes feature in GFF format
-                writer.newLine();
-            } catch (IOException ex) {
-                ErrorThrower.throwError(ex);
-            }
+    /**
+     * Writes a single feature to a file in GFF format.
+     */
+    private static void returnGff(Path outFile, Feature feature) {
+        try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            writer.write(feature.toGffFormat()); // Writes feature in GFF format
+            writer.newLine();
+        } catch (IOException ex) {
+            ErrorThrower.throwError(ex);
         }
+    }
 
-        /**
-         * Writes a single feature to a file in plain text format.
-         */
-        private static void returnTxt(Path outFile, Feature feature) {
-            try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.write(feature.toString()); // Writes feature using its toString method
-                writer.newLine();
-            } catch (IOException ex) {
-                ErrorThrower.throwError(ex);
-            }
+    /**
+     * Writes a single feature to a file in plain text format.
+     */
+    private static void returnTxt(Path outFile, Feature feature) {
+        try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            writer.write(feature.toString()); // Writes feature using its toString method
+            writer.newLine();
+        } catch (IOException ex) {
+            ErrorThrower.throwError(ex);
         }
+    }
 
-        /**
-         * Writes a single feature to a file in CSV format.
-         */
-        private static void returnCsv(Path outFile, Feature feature) {
-            try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
-                writer.write(feature.toCsvFormat()); // Writes feature in CSV format
-                writer.newLine();
-            } catch (IOException ex) {
-                ErrorThrower.throwError(ex);
-            }
+    /**
+     * Writes a single feature to a file in CSV format.
+     */
+    private static void returnCsv(Path outFile, Feature feature) {
+        try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            writer.write(feature.toCsvFormat()); // Writes feature in CSV format
+            writer.newLine();
+        } catch (IOException ex) {
+            ErrorThrower.throwError(ex);
         }
+    }
 
-        /**
-         * Determines the file type based on the file extension and writes the feature to the appropriate format.
-         */
-        public static void chooseTypeFile(Feature feature, OptionsProcessor options) {
-            Path outputFile = options.getOutputFile();
-            String fileName = outputFile.getFileName().toString().toLowerCase();
+    /**
+     * Determines the file type based on the file extension and writes the feature to the appropriate format.
+     */
+    public static void chooseTypeFile(Feature feature, OptionsProcessor options) {
+        Path outputFile = options.getOutputFile();
+        String fileName = outputFile.getFileName().toString().toLowerCase();
 
-            // Handle different output formats based on file extension
-            if (fileName.endsWith(".gff")) {
-                returnGff(outputFile, feature);
-            } else if (fileName.endsWith(".csv")) {
-                returnCsv(outputFile, feature);
-            } else if (fileName.endsWith(".txt")) {
-                returnTxt(outputFile, feature);
-            } else {
-                //TODO doesn't work yet
-                outputFile = Paths.get("./output/standard_gff_outfile.gff");
-                options.setOutputFile(outputFile);
-                logger.warn("Given file was invalid so writing to:" + outputFile);
-                checkFileDir(options);
-                returnGff(outputFile, feature);
-                // Unsupported file format, default to GFF output
+        // Handle different output formats based on file extension
+        if (fileName.endsWith(".gff")) {
+            returnGff(outputFile, feature);
+        } else if (fileName.endsWith(".csv")) {
+            returnCsv(outputFile, feature);
+        } else if (fileName.endsWith(".txt")) {
+            returnTxt(outputFile, feature);
+        } else {
+            //TODO doesn't work yet
+            outputFile = Paths.get("./output/standard_gff_outfile.gff");
+            options.setOutputFile(outputFile);
+            logger.warn("Given file was invalid so writing to:" + outputFile);
+            checkFileDir(options);
+            returnGff(outputFile, feature);
+            // Unsupported file format, default to GFF output
                 /*logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
                 Path defaultOutFile = outputFile.getParent() != null ?
                         outputFile.getParent().resolve("output_GFQueryTool.gff") :
                         Path.of("output_GFQueryTool.gff");
 
                 returnGff(defaultOutFile, feature);*/
-            }
         }
+    }
 
     public static void checkOutputfileVariable(OptionsProcessor options) {
         Path outputFile = options.getOutputFile();
@@ -149,7 +149,7 @@ public class ReturnFile {
 
 
     public static void writeHeader(String line, OptionsProcessor options) {
-            Path outFile = options.getOutputFile();
+        Path outFile = options.getOutputFile();
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
             writer.write(line);
             writer.newLine();

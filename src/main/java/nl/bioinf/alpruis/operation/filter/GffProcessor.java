@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -25,11 +26,17 @@ public class GffProcessor {
      * Each feature is parsed line by line, and parent-child relationships are handled.
      * Features are stored in a LinkedList, and a map is used to store features by their ID for fast lookup.
      *
-     * @param options the path   to the GFF3 file to be parsed.
+     * @param options contains the path to the GFF3 file to be parsed.
      */
     public static void gffParser(OptionsProcessor options) {
         try (BufferedReader reader = Files.newBufferedReader(options.getInputGffFile())) {
             String line;
+            String filename = options.getOutputFile().getFileName().toString().toLowerCase();
+            if (filename.endsWith(".csv")) {
+                ReturnFileBetter.writeHeader("sequence_id,source,feature_type,feature_start,feature_end,score,strand,phase,attributes", options);
+            } else if (filename.endsWith(".txt")) {
+                ReturnFileBetter.writeHeader("Feature{Sequence Id, Source, Feature type, Feature start, Feature end, score, strand, phase, attributes={}", options);
+            }
 
             for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
                 // Process each line of the GFF3 file
@@ -37,7 +44,7 @@ public class GffProcessor {
                     boolean filter;
 
                     if (line.startsWith("#")) {
-                        if (options.getOutputFile().getFileName().toString().toLowerCase().endsWith(".gff")) {
+                        if (filename.endsWith(".gff")) {
                             ReturnFile.writeHeader(line, options);  // Add header to the list
                         }
                     } else {
@@ -45,7 +52,7 @@ public class GffProcessor {
                         filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete(), options.getContains());
 
                         if (filter) {
-                            ReturnFile.chooseTypeFile(feature, options);
+                            ReturnFileBetter.chooseTypeFile(feature, options);
                         } // else keep going
                     }
                 }
