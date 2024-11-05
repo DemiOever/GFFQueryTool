@@ -97,7 +97,7 @@ public class CommandLineParser implements Runnable {
     /**
      * Processes GFF3 and FASTA files based on the command-line options.
      */
-    private void processFiles() {//TODO if not summary or they want a GFF back then no sequence making for time saving(lvl 4)
+    private void processFiles() {
 
         if (summary) {
             logger.info("Getting ready to parse GFF3 file...");
