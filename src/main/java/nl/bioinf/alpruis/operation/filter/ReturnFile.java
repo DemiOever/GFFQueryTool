@@ -89,6 +89,13 @@ public class ReturnFile {
         }
     }
 
+    /**
+     * Checks and sets the output file path based on the provided options.
+     * If no output file is specified, a default path is used. If a directory is specified,
+     * it adds a default filename. If only a filename is provided, a default directory will be added.
+     *
+     * @param options the options processor containing the output file setting.
+     */
     public static void checkOutputfileVariable(OptionsProcessor options) {
         Path outputFile = options.getOutputFile();
 
@@ -116,6 +123,13 @@ public class ReturnFile {
         }
     }
 
+    /**
+     * Checks and ensures that the output file and its parent directory exist.
+     * If the parent directory does not exist, a directory is created. If the
+     * output file already exists, it is deleted and recreated.
+     *
+     * @param options the options processor containing the output file setting.
+     */
     public static void checkFileDir(OptionsProcessor options) {
         // Ensure outputFile variable is checked and set
         Path outputFile = options.getOutputFile();
@@ -145,9 +159,14 @@ public class ReturnFile {
         }
     }
 
-
-
-
+    /**
+     * Writes a header line to the output file.
+     * The line is added to the file specified in the options, otherwise it
+     * throws an IOException error.
+     *
+     * @param line the header line to write to the output file.
+     * @param options the options processor containing the output file setting.
+     */
     public static void writeHeader(String line, OptionsProcessor options) {
         Path outFile = options.getOutputFile();
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
