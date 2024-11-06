@@ -33,9 +33,9 @@ public class GffProcessor {
             String line;
             String filename = options.getOutputFile().getFileName().toString().toLowerCase();
             if (filename.endsWith(".csv")) {
-                ReturnFileBetter.writeHeader("sequence_id,source,feature_type,feature_start,feature_end,score,strand,phase,attributes", options);
+                ReturnFile.writeHeader("sequence_id,source,feature_type,feature_start,feature_end,score,strand,phase,attributes", options);
             } else if (filename.endsWith(".txt")) {
-                ReturnFileBetter.writeHeader("Feature{Sequence Id, Source, Feature type, Feature start, Feature end, score, strand, phase, attributes={}", options);
+                ReturnFile.writeHeader("Feature{Sequence Id, Source, Feature type, Feature start, Feature end, score, strand, phase, attributes={}", options);
             }
 
             for (Map.Entry<String, List<String>> entry : options.getListFilter().entrySet()) {
@@ -52,7 +52,7 @@ public class GffProcessor {
                         filter = GFFFeatureFunctions.filteringLine(feature, entry.getKey(), entry.getValue(), options.isDelete(), options.getContains());
 
                         if (filter) {
-                            ReturnFileBetter.chooseTypeFile(feature, options);
+                            ReturnFile.chooseTypeFile(feature, options);
                         } // else keep going
                     }
                 }
