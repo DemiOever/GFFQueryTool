@@ -38,7 +38,7 @@ public class GffParser {
                 processLine(line, gffFeatures, map, headers);
             }
         } catch (IOException e) {
-            ErrorThrower.throwErrorE(e);
+            ErrorThrower.throwError(e);
         }
         //logger.info("done parsing");
         return gffFeatures;

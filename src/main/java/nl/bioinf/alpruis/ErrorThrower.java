@@ -29,9 +29,21 @@ public class ErrorThrower {
      *
      * @param e The Exception that triggered the error.
      */
-    public static void throwErrorE(Exception e) {
+    public static void throwError(Exception e) {
         logger.fatal("Something went wrong: Exception. Exiting.\n" +
                 "Error information: " + e.getMessage() + ": " + e.getCause());
         System.exit(1);
     }
-} // TODO make the errors better and add more of them
+
+    /**
+     * Logs a fatal error message and the cause of an Exception.
+     * This method should be called when a critical error occurs that requires the application to exit.
+     *
+     * @param message The invalid input of filter that triggered the error.
+     */
+    public static void throwError(String message) {
+        logger.fatal("Something went wrong: input filter invalid. Exiting.\n" +
+                "Error information: "+ message);
+        System.exit(1);
+    }
+}

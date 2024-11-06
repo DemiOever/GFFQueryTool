@@ -41,7 +41,7 @@ public class CommandLineParser implements Runnable {
     private boolean delete;
 
     @CommandLine.Option(names = {"-e","--extended"}, description = "This allows the parent and children of the feature to be included. Default is false but when used turned to true.")
-    private boolean extended; // TODO make this work somehow (lvl 2)
+    private boolean extended;
 
     @CommandLine.Option(names = {"-f", "--filter"}, description = "column name(ID, Chromosome, Type, Source, Region, Attributes) == list with things seperated by a comma to fetch or delete. Example: Type==gene,exon")
     private String listFilter;
@@ -49,10 +49,9 @@ public class CommandLineParser implements Runnable {
     @CommandLine.Option(names = {"-c","--contains"}, description = "If used it uses regex instead of equals")
     private boolean contains;
 
-    @CommandLine.Option(names = "-v")
+    @CommandLine.Option(names = "-v", description = "Verbosity. Default writer to logger is WARN. If -v is called it changes to INFO and -vv changes it to DEBUG.")
     private boolean[] verbose = new boolean[0];
 
-//TODO maybe able to specify filter multiple times
     /**
      * Executes the command-line options and performs the corresponding file processing tasks such as validation, feature extraction, or summary generation.
      */
@@ -108,7 +107,7 @@ public class CommandLineParser implements Runnable {
             Map<String, String> sequence = FileUtils.sequenceMaker(inputFastaFile);
             logger.info("Sequence has been made...");
             generateSummary(gffFeatures, sequence);
-        } if (!listFilter.isEmpty()) {
+        } if (listFilter != null) {
             filterFeatures();
         }
     }
@@ -148,23 +147,22 @@ public class CommandLineParser implements Runnable {
         }else {
             logger.error("Didn't give up any filtering or anything other.");
         }
-        //TODO put the extended option here
 
     }
 
     /**
      * Converts a string in the format "key=[value1,value2]" to a Map otherwise throws an Exception error.
      */
-    public static class StringToMapListConverter implements CommandLine.ITypeConverter<Map<String, List<String>>> { //TODO tests to be made
+    public static class StringToMapListConverter implements CommandLine.ITypeConverter<Map<String, List<String>>> {
         @Override
         public Map<String, List<String>> convert(String value) {
             Map<String, List<String>> map = new LinkedHashMap<>();
             try {
                 map.put(value.split("==")[0].toUpperCase(), List.of(value.split("==")[1].split(",")));
             } catch (Exception e) {
-                ErrorThrower.throwErrorE(e);
+                ErrorThrower.throwError(e);
             }
             return map;
-        }// TODO changes have to be added to help and readme so explanation and usage change
+        }
     }
 }
