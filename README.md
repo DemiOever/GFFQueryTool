@@ -78,27 +78,27 @@ Example datasets can be found in the `src/main/resources/data` directory. These 
 
 1. **Fetch Features by Attribute**:
    ```bash
-   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -f Attributes==Note=C1 .\src\main\resources\data\medium_genomic.gff .\src\main\resources\data\medium_genomic.fna -o .\src\main\resources\data\output\output.gff -c -v
+   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -f Attributes==Note=C1 .\src\main\resources\data\medium_genomic.gff .\src\main\resources\data\medium_genomic.fna -o output.gff -c -v
    ```
-   *Replace `input.gff` and `input.fasta` with your own file paths; `output.gff` is your desired output path.*  <br><br>
+   *Replace the path to `medium_genomic.gff` and `medium_genomic.fasta` with your own file paths and files; `output.gff` is your desired output path.*  <br><br>
 
 2. **Fetch Sequences by Chromosome**:
    ```bash
-   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -f Chromosome==NC_000067.7,NC_000070.7 input.gff input.fasta -o output.csv
+   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -f Chromosome==NC_000067.7,NC_000070.7 .\src\main\resources\data\medium_genomic.gff .\src\main\resources\data\medium_genomic.fna -o output.csv
    ```
-   *Replace `input.gff` and `input.fasta` with your own file paths; `output.gff` is your desired output path.*  <br><br>
+   *Replace the path to `medium_genomic.gff` and `medium_genomic.fasta` with your own file paths and files; `output.gff` is your desired output path.*  <br><br>
 
 3. **Delete Features by ID**:
    ```bash
-   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -d -f ID==ID12345 input.gff input.fasta -o output.txt
+   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -d -f ID==ID12345 .\src\main\resources\data\medium_genomic.gff .\src\main\resources\data\medium_genomic.fna -o output.txt
    ```
-   *Replace `input.gff` and `input.fasta` with your own file paths; `output.gff` is your desired output path.*  <br><br>
+   *Replace the path to `medium_genomic.gff` and `medium_genomic.fasta` with your own file paths and files; `output.gff` is your desired output path.*  <br><br>
 
 4. **Generate a Summary**:
    ```bash
-   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -s input.gff input.fasta
+   java -jar .\build\libs\gffquerytool-1.0-SNAPSHOT.jar -s .\src\main\resources\data\medium_genomic.gff .\src\main\resources\data\medium_genomic.fna
    ```
-   *Replace `input.gff` and `input.fasta` with your own file paths; `output.gff` is your desired output path.*  <br><br>
+   *Replace the path to `medium_genomic.gff` and `medium_genomic.fasta` with your own file paths and files; `output.gff` is your desired output path.*  <br><br>
 
 ---
 
