@@ -1,17 +1,20 @@
 package nl.bioinf.alpruis.operation.filter;
 
 import nl.bioinf.alpruis.Feature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-import static nl.bioinf.alpruis.Main.logger;
 /**
  * This class provides various functions to manipulate and filter GFF features, including deleting
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
 public class GFFFeatureFunctions {
+    private static final Logger logger = LogManager.getLogger(GFFFeatureFunctions.class.getName());
+
     private static Map<String, List<String>> parseList(List<String> listInput) {
-        Map<String, List<String>> mapInput = new HashMap<>();
+        Map<String, List<String>> mapInput = new LinkedHashMap<>();
 
         for (String attr : listInput) {
             int equalIndex = attr.indexOf("=");
@@ -30,18 +33,9 @@ public class GFFFeatureFunctions {
     private static boolean filterLine(String filter, List<String> listInput, boolean delete, boolean useContains) {
         boolean contains = false;
         if (useContains) {
-            System.out.println("something");
             for (String attr : listInput) {
-                if (delete) {
-                    contains = !attr.contains(filter);
-                } else {
-                    contains = attr.contains(filter);
-                    System.out.println("something else");
-
-                }
+                contains = filter.contains(attr) != delete;
                 if (contains) {
-                    System.out.println("why not contains");
-
                     break;
                 }
             }
@@ -79,7 +73,7 @@ public class GFFFeatureFunctions {
         return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, delete, useContains);
             case "TYPE" -> filterLine(feature.getType(), inputValues, delete, useContains);
-            case "CHROMOSOME" -> filterChromosome(feature.getSeqId(), inputValues, delete);
+            case "CHROMOSOME" -> filterLine(feature.getSeqId(), inputValues, delete, useContains);
             case "REGION" -> filterRegion(feature, inputValues, delete, useContains);
             case "ATTRIBUTES" -> filterAttributes(feature.getAttributes(), inputValues, delete, useContains);
             case "SOURCE" -> filterLine(feature.getSource(), inputValues, delete, useContains);
@@ -117,22 +111,6 @@ public class GFFFeatureFunctions {
         }
 
         // Now decide based on whether we're deleting or fetching
-        if (delete) {
-            // If deleting: return false if any match is found (i.e., we want to delete matched items)
-            return !foundMatch;  // Invert the match flag for deletion
-        } else {
-            // If fetching: return true only if any match is found (i.e., we want to keep matched items)
-            return foundMatch;
-        }
-    }
-
-
-
-    private static boolean filterChromosome(String chromosome, List<String> listInput, boolean delete) {
-        // Check if the feature's chromosome matches any in the input list
-        boolean matches = listInput.contains(chromosome);
-
-        // Return based on whether delete is true or false
-        return delete != matches;
+        return delete != foundMatch;
     }
 }

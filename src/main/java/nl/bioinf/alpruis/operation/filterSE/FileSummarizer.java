@@ -63,8 +63,8 @@ public class FileSummarizer {
      * @return a FeatureSummary object containing various statistics about the features and sequences.
      */
     public FeatureSummary summarizeFeatures(List<Feature> features, Map<String, String> sequence) {
-        Map<String, Integer> countingFeatures = new HashMap<>();
-        Map<String, Integer> countingSources = new HashMap<>();
+        Map<String, Integer> countingFeatures = new LinkedHashMap<>();
+        Map<String, Integer> countingSources = new LinkedHashMap<>();
 
         List<String> regions = new ArrayList<>();
 
@@ -96,7 +96,7 @@ public class FileSummarizer {
                 regions.add(feature.getSeqId());
             }
         }
-        logger.warn("In the strand column are {} found as empty.", unknownStrands); //TODO research and change if possible to catch this
+        logger.warn("In the strand column are {} found as empty.", unknownStrands);
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
         return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, countingSources, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);

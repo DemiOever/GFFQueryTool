@@ -1,6 +1,8 @@
 package nl.bioinf.alpruis.operation.filterSE;
 
 import nl.bioinf.alpruis.Feature;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -13,6 +15,7 @@ import java.util.Map;
  * and fetching based on different criteria such as attributes, IDs, types, regions, chromosomes, and sources.
  */
 public class GFFFeatureFunctionsExtended {
+    private static final Logger logger = LogManager.getLogger(GFFFeatureFunctionsExtended.class.getName());
     /**
      * Deletes features from the list that match specific attribute key-value pairs.
      *
@@ -95,7 +98,7 @@ public class GFFFeatureFunctionsExtended {
      * @return The filtered LinkedList of GFF features.
      */
     public static LinkedList<Feature> deleteChromosome(LinkedList<Feature> gffFeatures_del, List<String> listInput) {
-        gffFeatures_del.removeIf(feature -> listInput.contains(feature.getChromosome()));
+        gffFeatures_del.removeIf(feature -> listInput.contains(feature.getSeqId()));
         return gffFeatures_del;
     }
 
@@ -192,7 +195,7 @@ public class GFFFeatureFunctionsExtended {
      * @return The filtered LinkedList of GFF features.
      */
     public static LinkedList<Feature> fetchChromosome(LinkedList<Feature> gffFeatures_fetch, List<String> listInput) {
-        gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getChromosome()));
+        gffFeatures_fetch.removeIf(feature -> !listInput.contains(feature.getSeqId()));
         return gffFeatures_fetch;
     }
 
@@ -208,16 +211,16 @@ public class GFFFeatureFunctionsExtended {
         return gffFeatures_fetch;
     }
 
-    public static boolean filterLine(String filter, List<String> listInput, boolean extended) {
-        if (extended) { // TODO make work for extended
+    private static boolean filterLine(String filter, List<String> listInput, boolean extended) {
+        if (extended) {
             return !listInput.contains(filter);
         } else {
             return listInput.contains(filter);
         }
     }
 
-    public static boolean filterRegion(Feature feature, List<String> listInput, boolean extended) {
-        for (int i = 0; i < listInput.size(); i += 2) { // TODO make work for extended
+    private static boolean filterRegion(Feature feature, List<String> listInput, boolean extended) {
+        for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = Integer.parseInt(listInput.get(i));
             int regionEnd = Integer.parseInt(listInput.get(i + 1));
             if (regionStart < feature.getStart() && regionEnd > feature.getEnd()) {
@@ -227,8 +230,8 @@ public class GFFFeatureFunctionsExtended {
         return extended;
     }
 
-    public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean extended, boolean useContains) {
-        return switch (column) { // TODO make work for extended
+    private static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean extended, boolean useContains) {
+        return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, extended);
             case "Type" -> filterLine(feature.getType(), inputValues, extended);
             //case "Chromosome" -> filterChromosome(feature.getSeqId(), inputValues, delete);

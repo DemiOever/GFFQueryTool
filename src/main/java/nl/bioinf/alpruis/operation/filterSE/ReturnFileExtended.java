@@ -3,6 +3,8 @@ package nl.bioinf.alpruis.operation.filterSE;
 import nl.bioinf.alpruis.ErrorThrower;
 import nl.bioinf.alpruis.Feature;
 import nl.bioinf.alpruis.OptionsProcessor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -12,15 +14,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Map;
 
-import static nl.bioinf.alpruis.Main.logger;
-
 /**
  * The ReturnFile class provides methods to write features to different file formats including FASTA, GFF, CSV, and plain text.
  * The file format is determined based on the file extension, and appropriate methods are used to output the data.
  */
 public class ReturnFileExtended {
     // TODO update the code and make it extended
-
+    private static final Logger logger = LogManager.getLogger(ReturnFileExtended.class);
     /**
      * Writes the features to a file in FASTA format.
      *
@@ -30,6 +30,7 @@ public class ReturnFileExtended {
      */
     private static void returnFasta(Path outFile, LinkedList<Feature> result, Map<String, String> seq) { //TODO make the method work (lvl 3)
         try (BufferedWriter writer = Files.newBufferedWriter(outFile, StandardOpenOption.APPEND)) {
+            //writer.write(GffParser.headers);
             for (Feature feature : result) {
                 writer.write(">Feature " + feature.getID()); // Writes feature ID as FASTA header
                 writer.newLine();
@@ -100,19 +101,15 @@ public class ReturnFileExtended {
      * Determines the file type based on the file extension and writes the features to the appropriate format.
      * Supports FASTA, GFF, CSV, and plain text formats. For unsupported formats, writes to a default GFF file.
      *
-     * @param outputFile The output file path.
+     * @param options The output file path.
      * @param result The list of features to write.
-     * @param seq A map containing sequences, used for the FASTA output.
      */
     public static void chooseTypeFile(OptionsProcessor options, LinkedList<Feature> result) {
         Path outputFile = options.getOutputFile();
         String fileName = outputFile.getFileName().toString().toLowerCase();
 
         // Handle different output formats based on file extension
-        if (fileName.endsWith(".fasta")) {
-            checkFileDir(outputFile);
-            returnFasta(outputFile, result, options.getSequence());
-        } else if (fileName.endsWith(".gff")) {
+        if (fileName.endsWith(".gff")) {
             checkFileDir(outputFile);
             returnGff(outputFile, result);
         } else if (fileName.endsWith(".csv")) {
@@ -123,16 +120,14 @@ public class ReturnFileExtended {
             returnTxt(outputFile, result);
         } else {
             // Unsupported file format, default to GFF output
-            logger.error("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
-            // TODO figure out how to write to a default type aka output_GFQueryTool.gff(lvl 1) - Demi
+            logger.info("Unsupported file format: {}. Writing to default GFF file: output_GFQueryTool.gff", fileName);
 
-            // Create a default path for the output file
-            
             Path defaultOutFile = outputFile.getParent() != null ?
                     outputFile.getParent().resolve("output_GFQueryTool.gff") :
                     Path.of("output_GFQueryTool.gff");
 
             // Write to the default GFF file
+            checkFileDir(defaultOutFile);
             returnGff(defaultOutFile, result);
         }
     }

@@ -121,15 +121,6 @@ public class Feature {
     }
 
     /**
-     * Retrieves the chromosome (or sequence ID) this feature is located on from its attributes.
-     *
-     * @return the chromosome or sequence ID.
-     */
-    public String getChromosome() {
-        return attributes.get("chromosome");
-    }
-
-    /**
      * Retrieves the parent ID of this feature from its attributes, indicating hierarchical relationships.
      *
      * @return the parent ID of the feature, or null if not applicable.

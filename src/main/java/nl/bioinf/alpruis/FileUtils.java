@@ -1,20 +1,23 @@
 package nl.bioinf.alpruis;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static nl.bioinf.alpruis.ErrorThrower.throwError;
-import static nl.bioinf.alpruis.Main.logger;
 
 /**
  * Utility class providing functions for validating and processing files, specifically GFF3 and FASTA files.
  */
 public class FileUtils {
-
+    private static final Logger logger = LogManager.getLogger(FileUtils.class.getName());
     /**
      * Validates a GFF3 or FASTA file based on its extension and content.
      * - GFF3 files are validated by checking if they start with "##gff-version 3"
@@ -57,16 +60,17 @@ public class FileUtils {
      */
     private static boolean contentGFFValid(BufferedReader br) {
         boolean isValid = true;
+        int index = 0;
         try {
-            for (int i = 0; i <= 100; i++) {
-                String line = br.readLine();
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
                 if (!line.startsWith("#")) {
                     String[] columns = line.split("\t");
                     if (columns.length != 9) {
-                        logger.warn("Invalid amount of columns({}) found on row {}/100 of given GFF file", i, columns.length);
+                        logger.warn("Invalid amount of columns({}) found on row {}/100 of given GFF file", index, columns.length);
                         isValid = false;
                     }
                 }
+                index++;
             }
         }
         catch (IOException ex) {
@@ -83,17 +87,21 @@ public class FileUtils {
      * @return true if the sequence is valid, false otherwise.
      * @throws IOException if an I/O error occurs while reading the file.
      */
-    static boolean fastaSequenceValidator(BufferedReader br) throws IOException {
+    // Compile the pattern once and cache it for reuse
+    private static final Pattern FASTA_PATTERN = Pattern.compile("[ATCGN]*");
+
+    public static boolean fastaSequenceValidator(BufferedReader br) throws IOException {
         String line;
         while ((line = br.readLine()) != null) {
             line = line.toUpperCase();
-            // Ensure that the sequence only contains A, T, C, G (ignoring line breaks and comments starting with ">")
-            if (!line.startsWith(">") && !line.matches("[ATCGN]*")) {
+            // Ensure that the sequence only contains A, T, C, G, N (ignoring line breaks and comments starting with ">")
+            if (!line.startsWith(">") && !FASTA_PATTERN.matcher(line).matches()) {
                 return false;
             }
         }
         return true;
     }
+
 
     /**
      * Parses a FASTA file and constructs a map where each sequence is stored with its corresponding header.
@@ -103,7 +111,7 @@ public class FileUtils {
      * @return a map where keys are FASTA headers and values are the corresponding sequences.
      */
     public static Map<String, String> sequenceMaker(Path inputFastaFile) {
-        Map<String, String> sequence = new HashMap<>();
+        Map<String, String> sequence = new LinkedHashMap<>();
         String header = "";
         StringBuilder seq = new StringBuilder(); // Use StringBuilder for better performance
 

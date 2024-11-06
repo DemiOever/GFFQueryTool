@@ -15,7 +15,7 @@ public class FileSummarizerTest {
 
     @BeforeEach
     public void setUp() {
-        sequences = new HashMap<>();
+        sequences = new LinkedHashMap<>();
         sequences.put(">seq1", "ATGCATGC");
         sequences.put(">seq2", "GCGCGCGC");
         features = new ArrayList<>();
