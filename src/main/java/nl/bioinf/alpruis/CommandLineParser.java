@@ -152,6 +152,9 @@ public class CommandLineParser implements Runnable {
 
     }
 
+    /**
+     * Converts a string in the format "key=[value1,value2]" to a Map otherwise throws an Exception error.
+     */
     public static class StringToMapListConverter implements CommandLine.ITypeConverter<Map<String, List<String>>> { //TODO tests to be made
         @Override
         public Map<String, List<String>> convert(String value) {
