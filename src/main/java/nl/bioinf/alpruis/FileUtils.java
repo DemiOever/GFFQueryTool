@@ -28,7 +28,7 @@ public class FileUtils {
      * @param inputFile_path the path to the file to be validated.
      * @return true if the file is valid, false otherwise.
      */
-    public static Boolean fileValidator(Path inputFile_path) {
+    public static boolean fileValidator(Path inputFile_path) {
         boolean isValid = false;
 
         try (BufferedReader reader = Files.newBufferedReader(inputFile_path)) {
@@ -79,6 +79,9 @@ public class FileUtils {
         return isValid;
     }
 
+    // Compile the pattern once and cache it for reuse
+    private static final Pattern FASTA_PATTERN = Pattern.compile("[ATCGN]*");
+
     /**
      * Validates the nucleotide sequence of a FASTA file. It ensures that the sequence
      * only contains valid nucleotide characters (A, T, C, G, N).
@@ -87,9 +90,6 @@ public class FileUtils {
      * @return true if the sequence is valid, false otherwise.
      * @throws IOException if an I/O error occurs while reading the file.
      */
-    // Compile the pattern once and cache it for reuse
-    private static final Pattern FASTA_PATTERN = Pattern.compile("[ATCGN]*");
-
     public static boolean fastaSequenceValidator(BufferedReader br) throws IOException {
         String line;
         while ((line = br.readLine()) != null) {

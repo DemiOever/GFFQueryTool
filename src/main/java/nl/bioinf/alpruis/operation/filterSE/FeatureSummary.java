@@ -8,7 +8,7 @@ import java.util.Map;
  * such as sequence length, GC content, feature counts, gene counts, strand orientation, and more.
  */
 public class FeatureSummary {
-    private final Long seqLength;
+    private final long seqLength;
     private final double percentageGC;
     private final Map<String, Integer> countingFeatures;
     private final Map<String, Integer> countingSources;
@@ -30,7 +30,7 @@ public class FeatureSummary {
      * @param forwardStrands The number of features located on the forward strand.
      * @param reverseStrands The number of features located on the reverse strand.
      */
-    public FeatureSummary(Long seqLength, double percentageGC, Map<String, Integer> countingFeatures, Map<String, Integer> countingSources, List<String> regions, int countGenes, long avgLengthGenes, int forwardStrands, int reverseStrands) {
+    public FeatureSummary(long seqLength, double percentageGC, Map<String, Integer> countingFeatures, Map<String, Integer> countingSources, List<String> regions, int countGenes, long avgLengthGenes, int forwardStrands, int reverseStrands) {
         this.seqLength = seqLength;
         this.percentageGC = percentageGC;
         this.countingFeatures = countingFeatures;
@@ -58,7 +58,7 @@ public class FeatureSummary {
         return reverseStrands;
     }
 
-    public Long getSeqLength() {
+    public long getSeqLength() {
         return seqLength;
     }
 

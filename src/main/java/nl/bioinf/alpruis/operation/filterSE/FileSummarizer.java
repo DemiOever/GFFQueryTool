@@ -21,7 +21,7 @@ public class FileSummarizer {
      * @param sequence a map containing FASTA headers as keys and their corresponding sequences as values.
      * @return the average sequence length.
      */
-    private static Long averageLength(Map<String,String> sequence){
+    private static long averageLength(Map<String,String> sequence){
         long sum = 0;
         for (Map.Entry<String, String> entry : sequence.entrySet()) {
             sum += entry.getValue().length();
@@ -96,7 +96,7 @@ public class FileSummarizer {
                 regions.add(feature.getSeqId());
             }
         }
-        logger.warn("In the strand column are {} found as empty.", unknownStrands);
+        logger.warn("In the strand column are {} found as empty(not forward nor reverse).", unknownStrands);
         long avgLengthGenes = countGenes > 0 ? lengthGenes / countGenes : 0;
 
         return new FeatureSummary(averageLength(sequence), gettingGcPercentage(sequence), countingFeatures, countingSources, regions, countGenes, avgLengthGenes, forwardStrands, reverseStrands);
