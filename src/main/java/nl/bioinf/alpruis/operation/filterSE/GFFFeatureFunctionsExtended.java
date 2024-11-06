@@ -211,7 +211,7 @@ public class GFFFeatureFunctionsExtended {
         return gffFeatures_fetch;
     }
 
-    public static boolean filterLine(String filter, List<String> listInput, boolean extended) {
+    private static boolean filterLine(String filter, List<String> listInput, boolean extended) {
         if (extended) {
             return !listInput.contains(filter);
         } else {
@@ -219,7 +219,7 @@ public class GFFFeatureFunctionsExtended {
         }
     }
 
-    public static boolean filterRegion(Feature feature, List<String> listInput, boolean extended) {
+    private static boolean filterRegion(Feature feature, List<String> listInput, boolean extended) {
         for (int i = 0; i < listInput.size(); i += 2) {
             int regionStart = Integer.parseInt(listInput.get(i));
             int regionEnd = Integer.parseInt(listInput.get(i + 1));
@@ -230,7 +230,7 @@ public class GFFFeatureFunctionsExtended {
         return extended;
     }
 
-    public static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean extended, boolean useContains) {
+    private static boolean filteringLine(Feature feature, String column, List<String> inputValues, boolean extended, boolean useContains) {
         return switch (column) {
             case "ID" -> filterLine(feature.getID(), inputValues, extended);
             case "Type" -> filterLine(feature.getType(), inputValues, extended);
