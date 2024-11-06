@@ -134,6 +134,11 @@ Feature{seqID='NC_000067.7', source='RefSeq', type='region', start=1, end=195154
 - Implementing the extended option to include child features. Some methods for extended are already implemented, but the extended function isn't working yet.
 - Optimizing performance by addressing time-consuming classes/methods.
 - Completing tests for all methods and classes.
+- Implementing that the application stops running when everything in the given list is found. This is to lessen the time-consumption and memory but also the fact that the headers in between the lines get included even when the data being filtered has nothing to do with it.
+- Try using set instead of list from given input filters
+- We use equals with filtering the data, which is string equals string. Implementation of hashcode could optimize the equals option.
+- Be able to return a fasta file.
+- At the moment the summary is very slow, this is because both files are kept in memory which is not effective at all. Implementation to be made is a summary while the fasta and gff are being parsed so it doesn't need to be saved in memory.
 
 ---
 ### Fun Fact
